@@ -17,6 +17,11 @@ export default class Login extends Command {
       password: () => p.password({ message: "please enter your password" }),
     });
 
+    if (p.isCancel(data)) {
+      p.cancel("Operation cancelled. 😒");
+      process.exit(0);
+    }
+
     const sp = p.spinner();
     sp.start("loading 🔁");
 
