@@ -2,10 +2,10 @@ import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import * as fs from "node:fs";
 
-import { pullServices } from "../../services/pull-services.js";
+import { pushServices } from "../../services/push-services.js";
 
-export default class Pull extends Command {
-  static description = "Pull .env securely";
+export default class Push extends Command {
+  static description = "Push .env securely";
 
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
@@ -27,10 +27,14 @@ export default class Pull extends Command {
     sp.start("loading 🔁");
 
     try {
-      const response = await pullServices(kind as "development" | "production");
-      fs.writeFile(`.env.${kind}`, String(response), (error) => {
+      const response = await pushServices(kind as "development" | "production");
+      fs.readFile(String(response), (error, data) => {
         if (error) sp.stop(error.message);
-        else sp.stop("success ✅");
+        else {
+          const value = data.toString();
+          p.outro(value);
+          sp.stop("success ✅");
+        }
       });
     } catch {
       sp.stop("oops ❌");
