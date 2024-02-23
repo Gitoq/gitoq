@@ -12,15 +12,18 @@ export default class Login extends Command {
   async run(): Promise<void> {
     p.intro("Welcome to dotenv CLI! 🚀");
 
-    const data = await p.group({
-      email: () => p.text({ message: "please enter your email" }),
-      password: () => p.password({ message: "please enter your password" }),
-    });
-
-    if (p.isCancel(data)) {
-      p.cancel("Operation cancelled. 😒");
-      process.exit(0);
-    }
+    const data = await p.group(
+      {
+        email: () => p.text({ message: "please enter your email" }),
+        password: () => p.password({ message: "please enter your password" }),
+      },
+      {
+        onCancel() {
+          p.cancel("Operation cancelled. 😒");
+          process.exit(0);
+        },
+      }
+    );
 
     const sp = p.spinner();
     sp.start("loading 🔁");
