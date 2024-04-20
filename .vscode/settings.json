@@ -7,5 +7,6 @@
     "titleBar.inactiveBackground": "#85c4cc99",
     "titleBar.inactiveForeground": "#15202b99"
   },
-  "peacock.color": "#85C4CC"
+  "peacock.color": "#85C4CC",
+  "conventionalCommits.scopes": ["global"]
 }
