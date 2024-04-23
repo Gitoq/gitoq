@@ -8,5 +8,5 @@
     "titleBar.inactiveForeground": "#15202b99"
   },
   "peacock.color": "#85C4CC",
-  "conventionalCommits.scopes": ["global"]
+  "conventionalCommits.scopes": ["global", "constants", "helper", "services", "commands", "configs"]
 }
