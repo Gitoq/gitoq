@@ -4,10 +4,10 @@ import { apiCliLogin } from "../../services/index.js";
 import { dispatchConfig } from "../../helper/index.js";
 
 const authorization =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzODYyMDU3LCJleHAiOjE3MTY0NTQwNTd9.1QPfvxz-mORF8tVv-wG-FfK_VkR98vvNWfYDHqgNHT4";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzOTc0NzY3LCJleHAiOjE3MTY1NjY3Njd9.m1GDfnc2TnfkRMF92D0LdsLheGmIjhCFuxIujzwvh6o";
 
 export default class Login extends Command {
-  static description = "Log in";
+  static description = "Login";
 
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
