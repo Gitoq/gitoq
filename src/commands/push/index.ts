@@ -1,8 +1,7 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import * as fs from "node:fs";
 
-import { pushServices } from "../../services/push-services.js";
+// import { pushServices } from "../../services/push-services";
 
 export default class Push extends Command {
   static description = "Push .env securely";
@@ -27,15 +26,15 @@ export default class Push extends Command {
     sp.start("loading 🔁");
 
     try {
-      const response = await pushServices(kind as "development" | "production");
-      fs.readFile(String(response), (error, data) => {
-        if (error) sp.stop(error.message);
-        else {
-          const value = data.toString();
-          p.outro(value);
-          sp.stop("success ✅");
-        }
-      });
+      // const response = await pushServices(kind as "development" | "production");
+      // fs.readFile(String(response), (error, data) => {
+      //   if (error) sp.stop(error.message);
+      //   else {
+      //     const value = data.toString();
+      //     p.outro(value);
+      //     sp.stop("success ✅");
+      //   }
+      // });
     } catch {
       sp.stop("oops ❌");
     }

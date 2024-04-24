@@ -1,20 +1,20 @@
 {
-  "name": "envlock",
+  "name": "gitoq",
   "version": "0.0.0",
-  "description": "A secrets manager for .env files – from the same people that pioneered dotenv.",
-  "author": "envlock",
+  "description": "",
+  "author": "gitoq",
   "keywords": [
     "oclif"
   ],
-  "homepage": "https://github.com/dotenv-wallet/dotenv-cli",
-  "bugs": "https://github.com/Desktop/envlock/issues",
-  "repository": "dotenv-wallet/dotenv-cli",
+  "homepage": "https://github.com/Gitoq/gitoq-cli",
+  "bugs": "https://github.com/Gitoq/gitoq-cli/issues",
+  "repository": "Gitoq/gitoq-cli",
   "license": "MIT",
   "type": "module",
   "exports": "./lib/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "envlock": "./bin/run.js"
+    "gitoq": "./bin/run.js"
   },
   "files": [
     "/bin",
@@ -25,17 +25,17 @@
     "orval": "orval",
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint . --ext .ts",
-    "prepack": "pnpm run build && oclif manifest && oclif readme",
     "postpack": "shx rm -f oclif.manifest.json",
-    "prepare": "pnpm run build",
+    "posttest": "npm run lint",
+    "prepack": "npm run build && oclif manifest && oclif readme",
+    "prepare": "npm run build",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "posttest": "pnpm run lint",
     "version": "oclif readme && git add README.md"
   },
   "oclif": {
-    "bin": "envlock",
+    "bin": "gitoq",
     "commands": "./dist/commands",
-    "dirname": "envlock",
+    "dirname": "gitoq",
     "plugins": [
       "@oclif/plugin-help",
       "@oclif/plugin-plugins"

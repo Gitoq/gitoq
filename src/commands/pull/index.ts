@@ -1,8 +1,7 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import * as fs from "node:fs";
 
-import { pullServices } from "../../services/pull-services.js";
+// import { pullServices } from "../../services/pull-services";
 
 export default class Pull extends Command {
   static description = "Pull .env securely";
@@ -27,11 +26,11 @@ export default class Pull extends Command {
     sp.start("loading 🔁");
 
     try {
-      const response = await pullServices(kind as "development" | "production");
-      fs.writeFile(`.env.${kind}`, String(response), (error) => {
-        if (error) sp.stop(error.message);
-        else sp.stop("success ✅");
-      });
+      // const response = await pullServices(kind as "development" | "production");
+      // fs.writeFile(`.env.${kind}`, String(response), (error) => {
+      //   if (error) sp.stop(error.message);
+      //   else sp.stop("success ✅");
+      // });
     } catch {
       sp.stop("oops ❌");
     }

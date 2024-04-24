@@ -1,5 +1,5 @@
-import fs from "node:fs";
 import dotenv from "dotenv";
+import fs from "node:fs";
 import { CONFIG_FILE_URL } from "../constants/index.js";
 
 // ? env
