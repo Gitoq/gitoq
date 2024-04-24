@@ -1,8 +1,10 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import * as fs from "node:fs";
+import { apiCliLogin } from "../../services/index.js";
+import { dispatchConfig } from "../../helper/index.js";
 
-import { loginServices } from "../../services/login-services.js";
+const authorization =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzODYyMDU3LCJleHAiOjE3MTY0NTQwNTd9.1QPfvxz-mORF8tVv-wG-FfK_VkR98vvNWfYDHqgNHT4";
 
 export default class Login extends Command {
   static description = "Log in";
@@ -11,32 +13,14 @@ export default class Login extends Command {
 
   async run(): Promise<void> {
     p.intro("Welcome to dotenv CLI! 🚀");
-
-    const data = await p.group(
-      {
-        email: () => p.text({ message: "please enter your email" }),
-        password: () => p.password({ message: "please enter your password" }),
-      },
-      {
-        onCancel() {
-          p.cancel("Operation cancelled. 😒");
-          process.exit(0);
-        },
-      }
-    );
-
     const sp = p.spinner();
     sp.start("loading 🔁");
 
-    try {
-      const response = await loginServices(data);
-      const envValue = `TOKEN=${response}`;
-      fs.writeFile(".env.me", envValue, (error) => {
-        if (error) sp.stop(error.message);
-        else sp.stop("welcome 🎉");
-      });
-    } catch {
-      sp.stop("email or password wrong !");
-    }
+    await apiCliLogin({ headers: { authorization } })
+      .then(({ data }) => {
+        dispatchConfig(data.token);
+        sp.stop("welcome 🎉");
+      })
+      .catch(() => sp.stop("Wrong credentials"));
   }
 }
