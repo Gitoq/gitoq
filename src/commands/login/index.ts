@@ -1,13 +1,13 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import { dispatchConfig } from "../../helper/index";
 import { apiCliLogin } from "../../services/index";
+import { dispatchConfig, errorHandler } from "../../helper/index";
 
 const authorization =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzODYyMDU3LCJleHAiOjE3MTY0NTQwNTd9.1QPfvxz-mORF8tVv-wG-FfK_VkR98vvNWfYDHqgNHT4";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzOTc0NzY3LCJleHAiOjE3MTY1NjY3Njd9.m1GDfnc2TnfkRMF92D0LdsLheGmIjhCFuxIujzwvh6o";
 
 export default class Login extends Command {
-  static description = "Log in";
+  static description = "Login";
 
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
@@ -21,6 +21,6 @@ export default class Login extends Command {
         dispatchConfig(data.token);
         sp.stop("welcome 🎉");
       })
-      .catch(() => sp.stop("Wrong credentials"));
+      .catch(errorHandler(sp));
   }
 }
