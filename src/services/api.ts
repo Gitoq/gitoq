@@ -1,5 +1,5 @@
-import { TOptions, TOrvalOptions } from "./types.js";
-import { configEnv, deleteConfig, getConfig } from "../helper/index.js";
+import { TOptions, TOrvalOptions } from "./types";
+import { configEnv, deleteConfig, getConfig } from "../helper/index";
 
 configEnv();
 

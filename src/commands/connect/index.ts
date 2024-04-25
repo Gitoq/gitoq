@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Command, Args } from "@oclif/core";
-import { cancelOperation, dispatchLock, errorHandler } from "../../helper/index.js";
-import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index.js";
+import { cancelOperation, dispatchLock, errorHandler } from "../../helper/index";
+import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index";
 
 export default class Connect extends Command {
   static description = "Connect";
