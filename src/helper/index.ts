@@ -23,6 +23,7 @@ export const getConfig = () => {
       if (parsedData.token) return parsedData.token;
     }
   }
+
   throw new Error("Please login first");
 };
 
@@ -31,7 +32,7 @@ export const deleteConfig = () => isConfigExists() && fs.unlinkSync(CONFIG_FILE_
 // ? lock file
 export const isLockExists = () => {
   const lockPath = path.join(process.cwd(), ".gitoq.lock");
-  return { isExists: fs.existsSync(lockPath), path: lockPath };
+  return { path: lockPath, isExists: fs.existsSync(lockPath) };
 };
 
 export const dispatchLock = (token: string) => {

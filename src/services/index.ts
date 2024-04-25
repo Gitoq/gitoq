@@ -4,7 +4,7 @@
  * Gitoq
  * OpenAPI spec version: 1.0.0
  */
-import { api } from './api';
+import { api } from "./api";
 export type ApiCliWorkspaceProjects200 = {
   message?: string;
   projects: ExtraLimitedProject[];
@@ -20,178 +20,178 @@ export type ApiCliLogout200 = {
 };
 
 export type ApiCliLogin200 = {
-  message?: string;
   token: string;
+  message?: string;
 };
 
 export interface User {
-  avatar: string;
-  created_at: string;
-  default_workspace: number;
-  email: string;
   id: number;
+  name: string;
+  email: string;
+  avatar: string;
+  role: UserRole;
+  created_at: string;
   is_banned: boolean;
   is_joined: boolean;
-  is_verified: boolean;
   modified_at: string;
-  name: string;
-  role: UserRole;
+  is_verified: boolean;
   workspaces_count: number;
+  default_workspace: number;
 }
 
 export interface Workspace {
+  id: number;
+  name: string;
+  owner: number;
   avatar: string;
   created_at: string;
   description: string;
-  id: number;
   is_default: boolean;
-  name: string;
-  owner: number;
   projects_count: number;
 }
 
 export interface Project {
-  created_at: string;
-  default_env: number;
-  envs_count: number;
   id: number;
-  licenses_count: number;
   name: string;
   owner: number;
   token: string;
-  with_env_example: boolean;
   workspace: number;
+  created_at: string;
+  envs_count: number;
+  default_env: number;
+  licenses_count: number;
+  with_env_example: boolean;
 }
 
 export interface License {
-  created_at: string;
   /** ID */
   id: number;
-  is_verified: boolean;
-  owner: LimitedUser;
-  permissions: LicensePermissions;
   role: LicenseRole;
+  created_at: string;
+  owner: LimitedUser;
+  is_verified: boolean;
+  permissions: LicensePermissions;
 }
 
 export interface UserFully {
-  avatar: string;
-  created_at: string;
-  default_workspace: Workspace;
-  email: string;
   id: number;
+  name: string;
+  email: string;
+  avatar: string;
+  role: UserRole;
+  created_at: string;
   is_banned: boolean;
   is_joined: boolean;
-  is_verified: boolean;
   modified_at: string;
-  name: string;
-  role: UserRole;
+  is_verified: boolean;
   workspaces_count: number;
+  default_workspace: Workspace;
 }
 
 export interface ProjectFully {
-  created_at: string;
-  default_env: number;
-  envs: LimitedEnd[];
-  envs_count: number;
   id: number;
-  licenses: License[];
-  licenses_count: number;
   name: string;
   owner: number;
   token: string;
-  user_license: LicensePermissions;
-  with_env_example: boolean;
   workspace: number;
+  created_at: string;
+  envs: LimitedEnd[];
+  envs_count: number;
+  default_env: number;
+  licenses: License[];
+  licenses_count: number;
+  with_env_example: boolean;
+  user_license: LicensePermissions;
 }
 
 export interface Env {
-  content: string;
-  created_at: string;
   id: number;
-  is_default: boolean;
   name: string;
+  content: string;
   project: number;
   workspace: number;
+  created_at: string;
+  is_default: boolean;
 }
 
 /**
  * @nullable
  */
-export type LogInfo = {
+export type LogInfo = null | {
   env_name?: string;
   new_name?: string;
   prev_name?: string;
   project_name?: string;
-} | null;
+};
 
 export interface Log {
-  action: LogActions;
-  created_at: string;
-  done_by: ExtraLimitedUser;
-  effected?: ExtraLimitedUser;
   id: number;
   /** @nullable */
   info: LogInfo;
-  /** @nullable */
-  project: number | null;
   workspace: number;
+  action: LogActions;
+  created_at: string;
+  /** @nullable */
+  project: null | number;
+  done_by: ExtraLimitedUser;
+  effected?: ExtraLimitedUser;
 }
 
 export interface LimitedWorkspace {
   /** ID */
   id: number;
-  is_default: boolean;
   owner: number;
+  is_default: boolean;
   projects_count: number;
 }
 
 export interface ExtraLimitedWorkspace {
-  avatar: string;
   /** ID */
   id: number;
   name: string;
+  avatar: string;
   projects_count: number;
 }
 
 export interface LimitedProject {
-  default_env: number;
   id: number;
   /** name */
   name: string;
   workspace: number;
+  default_env: number;
 }
 
 export interface LimitedEnd {
-  created_at: string;
   id: number;
-  is_default: boolean;
   name: string;
   project: number;
   workspace: number;
+  created_at: string;
+  is_default: boolean;
 }
 
 export interface LimitedUser {
-  avatar: string;
-  email: string;
   id: number;
   name: string;
+  email: string;
+  avatar: string;
 }
 
 export interface ExtraLimitedUser {
-  email: string;
   id: number;
   name: string;
+  email: string;
 }
 
 export type ErrorErrors = { [key: string]: any };
 
 export interface Error {
   env?: number;
-  errors?: ErrorErrors;
   key?: string;
   message?: string;
   project?: number;
   workspace?: number;
+  errors?: ErrorErrors;
 }
 
 export interface Response {
@@ -199,115 +199,105 @@ export interface Response {
 }
 
 export type UserWorkspacesSelectedWorkspace = {
+  id: number;
+  name: string;
+  owner: number;
   avatar: string;
   created_at: string;
   description: string;
-  id: number;
   is_default: boolean;
-  licenses: LimitedUser[];
   licenses_count: number;
-  name: string;
-  owner: number;
-  projects: LimitedProject[];
   projects_count: number;
+  licenses: LimitedUser[];
+  projects: LimitedProject[];
 };
 
 export interface UserWorkspaces {
-  selected_workspace: UserWorkspacesSelectedWorkspace;
   workspaces: ExtraLimitedWorkspace[];
+  selected_workspace: UserWorkspacesSelectedWorkspace;
 }
 
-export type LicensePermissionsItem = typeof LicensePermissionsItem[keyof typeof LicensePermissionsItem];
+export type LicensePermissionsItem = (typeof LicensePermissionsItem)[keyof typeof LicensePermissionsItem];
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const LicensePermissionsItem = {
-  EDIT_LICENSE: 'EDIT_LICENSE',
-  ADD_LICENSE: 'ADD_LICENSE',
-  REMOVE_LICENSE: 'REMOVE_LICENSE',
-  EDIT_PROJECT: 'EDIT_PROJECT',
-  DELETE_PROJECT: 'DELETE_PROJECT',
-  TRANSFER_PROJECT: 'TRANSFER_PROJECT',
-  ADD_ENV: 'ADD_ENV',
-  DELETE_ENV: 'DELETE_ENV',
-  EDIT_ENV: 'EDIT_ENV',
-  PULL_ENV: 'PULL_ENV',
-  PUSH_ENV: 'PUSH_ENV',
+  ADD_ENV: "ADD_ENV",
+  EDIT_ENV: "EDIT_ENV",
+  PULL_ENV: "PULL_ENV",
+  PUSH_ENV: "PUSH_ENV",
+  DELETE_ENV: "DELETE_ENV",
+  ADD_LICENSE: "ADD_LICENSE",
+  EDIT_LICENSE: "EDIT_LICENSE",
+  EDIT_PROJECT: "EDIT_PROJECT",
+  REMOVE_LICENSE: "REMOVE_LICENSE",
+  DELETE_PROJECT: "DELETE_PROJECT",
+  TRANSFER_PROJECT: "TRANSFER_PROJECT",
 } as const;
 
 export type LicensePermissions = LicensePermissionsItem[];
 
-export type LicenseRole = typeof LicenseRole[keyof typeof LicenseRole];
+export type LicenseRole = (typeof LicenseRole)[keyof typeof LicenseRole];
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const LicenseRole = {
-  OWNER: 'OWNER',
-  MEMBER: 'MEMBER',
+  OWNER: "OWNER",
+  MEMBER: "MEMBER",
 } as const;
 
-export type UserRole = typeof UserRole[keyof typeof UserRole];
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const UserRole = {
-  ADMIN: 'ADMIN',
-  USER: 'USER',
+  USER: "USER",
+  ADMIN: "ADMIN",
 } as const;
 
-export type LogActions = typeof LogActions[keyof typeof LogActions];
+export type LogActions = (typeof LogActions)[keyof typeof LogActions];
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const LogActions = {
-  CREATE_ENV: 'CREATE_ENV',
-  REMOVE_ENV: 'REMOVE_ENV',
-  UPDATE_ENV: 'UPDATE_ENV',
-  PUSH_ENV: 'PUSH_ENV',
-  LEFT: 'LEFT',
-  UPDATE_LICENSE: 'UPDATE_LICENSE',
-  REMOVE_LICENSE: 'REMOVE_LICENSE',
-  SEND_LICENSE_REQUEST: 'SEND_LICENSE_REQUEST',
-  APPLY_LICENSE_REQUEST: 'APPLY_LICENSE_REQUEST',
-  REMOVE_LICENSE_REQUEST: 'REMOVE_LICENSE_REQUEST',
-  CREATE_PROJECT: 'CREATE_PROJECT',
-  REMOVE_PROJECT: 'REMOVE_PROJECT',
-  UPDATE_PROJECT: 'UPDATE_PROJECT',
-  SEND_PROJECT_TRANSFER_REQUEST: 'SEND_PROJECT_TRANSFER_REQUEST',
-  APPLY_PROJECT_TRANSFER_REQUEST: 'APPLY_PROJECT_TRANSFER_REQUEST',
-  CREATE_WORKSPACE: 'CREATE_WORKSPACE',
-  UPDATE_WORKSPACE: 'UPDATE_WORKSPACE',
-  SEND_WORKSPACE_TRANSFER_REQUEST: 'SEND_WORKSPACE_TRANSFER_REQUEST',
-  APPLY_WORKSPACE_TRANSFER_REQUEST: 'APPLY_WORKSPACE_TRANSFER_REQUEST',
-  SIGNUP: 'SIGNUP',
-  LOGIN: 'LOGIN',
-  LOGOUT: 'LOGOUT',
-  UPDATE_PROFILE: 'UPDATE_PROFILE',
-  UPDATE_PASSWORD: 'UPDATE_PASSWORD',
-  RESET_PASSWORD: 'RESET_PASSWORD',
+  LEFT: "LEFT",
+  LOGIN: "LOGIN",
+  SIGNUP: "SIGNUP",
+  LOGOUT: "LOGOUT",
+  PUSH_ENV: "PUSH_ENV",
+  CREATE_ENV: "CREATE_ENV",
+  REMOVE_ENV: "REMOVE_ENV",
+  UPDATE_ENV: "UPDATE_ENV",
+  UPDATE_LICENSE: "UPDATE_LICENSE",
+  REMOVE_LICENSE: "REMOVE_LICENSE",
+  CREATE_PROJECT: "CREATE_PROJECT",
+  REMOVE_PROJECT: "REMOVE_PROJECT",
+  UPDATE_PROJECT: "UPDATE_PROJECT",
+  UPDATE_PROFILE: "UPDATE_PROFILE",
+  RESET_PASSWORD: "RESET_PASSWORD",
+  UPDATE_PASSWORD: "UPDATE_PASSWORD",
+  CREATE_WORKSPACE: "CREATE_WORKSPACE",
+  UPDATE_WORKSPACE: "UPDATE_WORKSPACE",
+  SEND_LICENSE_REQUEST: "SEND_LICENSE_REQUEST",
+  APPLY_LICENSE_REQUEST: "APPLY_LICENSE_REQUEST",
+  REMOVE_LICENSE_REQUEST: "REMOVE_LICENSE_REQUEST",
+  SEND_PROJECT_TRANSFER_REQUEST: "SEND_PROJECT_TRANSFER_REQUEST",
+  APPLY_PROJECT_TRANSFER_REQUEST: "APPLY_PROJECT_TRANSFER_REQUEST",
+  SEND_WORKSPACE_TRANSFER_REQUEST: "SEND_WORKSPACE_TRANSFER_REQUEST",
+  APPLY_WORKSPACE_TRANSFER_REQUEST: "APPLY_WORKSPACE_TRANSFER_REQUEST",
 } as const;
 
-export type SessionDeviceType = typeof SessionDeviceType[keyof typeof SessionDeviceType];
+export type SessionDeviceType = (typeof SessionDeviceType)[keyof typeof SessionDeviceType];
 
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const SessionDeviceType = {
-  PHONE: 'PHONE',
-  DESKTOP: 'DESKTOP',
-  CLI: 'CLI',
-  OTHERS: 'OTHERS',
+  CLI: "CLI",
+  PHONE: "PHONE",
+  OTHERS: "OTHERS",
+  DESKTOP: "DESKTOP",
 } as const;
 
 export interface Session {
-  created_at: string;
-  device_type: SessionDeviceType;
-  expires_in: number;
   /** ID */
   id: number;
+  user: number;
+  created_at: string;
+  expires_in: number;
   long_agent: string;
   modified_at: string;
   short_agent: string;
-  user: number;
+  device_type: SessionDeviceType;
 }
 
 export interface SuperExtraLimitedWorkspace {
@@ -324,61 +314,33 @@ export interface ExtraLimitedProject {
   token: string;
 }
 
-
-
-
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
-
-  /**
+/**
  * @summary login
  */
-export const apiCliLogin = (
-    
- options?: SecondParameter<typeof api>,) => {
-      return api<ApiCliLogin200>(
-      {url: `/cli/login`, method: 'POST'
-    },
-      options);
-    }
-  
+export const apiCliLogin = (options?: SecondParameter<typeof api>) =>
+  api<ApiCliLogin200>({ method: "POST", url: `/cli/login` }, options);
+
 /**
  * @summary logout
  */
-export const apiCliLogout = (
-    
- options?: SecondParameter<typeof api>,) => {
-      return api<ApiCliLogout200>(
-      {url: `/cli/logout`, method: 'DELETE'
-    },
-      options);
-    }
-  
+export const apiCliLogout = (options?: SecondParameter<typeof api>) =>
+  api<ApiCliLogout200>({ method: "DELETE", url: `/cli/logout` }, options);
+
 /**
  * @summary user workspaces
  */
-export const apiCliUserWorkspaces = (
-    
- options?: SecondParameter<typeof api>,) => {
-      return api<ApiCliUserWorkspaces200>(
-      {url: `/cli/user-workspaces`, method: 'GET'
-    },
-      options);
-    }
-  
+export const apiCliUserWorkspaces = (options?: SecondParameter<typeof api>) =>
+  api<ApiCliUserWorkspaces200>({ method: "GET", url: `/cli/user-workspaces` }, options);
+
 /**
  * @summary workspace projects
  */
-export const apiCliWorkspaceProjects = (
-    id: number,
- options?: SecondParameter<typeof api>,) => {
-      return api<ApiCliWorkspaceProjects200>(
-      {url: `/cli/workspace-projects/${id}`, method: 'GET'
-    },
-      options);
-    }
-  
-export type ApiCliLoginResult = NonNullable<Awaited<ReturnType<typeof apiCliLogin>>>
-export type ApiCliLogoutResult = NonNullable<Awaited<ReturnType<typeof apiCliLogout>>>
-export type ApiCliUserWorkspacesResult = NonNullable<Awaited<ReturnType<typeof apiCliUserWorkspaces>>>
-export type ApiCliWorkspaceProjectsResult = NonNullable<Awaited<ReturnType<typeof apiCliWorkspaceProjects>>>
+export const apiCliWorkspaceProjects = (id: number, options?: SecondParameter<typeof api>) =>
+  api<ApiCliWorkspaceProjects200>({ method: "GET", url: `/cli/workspace-projects/${id}` }, options);
+
+export type ApiCliLoginResult = NonNullable<Awaited<ReturnType<typeof apiCliLogin>>>;
+export type ApiCliLogoutResult = NonNullable<Awaited<ReturnType<typeof apiCliLogout>>>;
+export type ApiCliUserWorkspacesResult = NonNullable<Awaited<ReturnType<typeof apiCliUserWorkspaces>>>;
+export type ApiCliWorkspaceProjectsResult = NonNullable<Awaited<ReturnType<typeof apiCliWorkspaceProjects>>>;
