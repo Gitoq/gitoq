@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import dotenv from "dotenv";
 import path from "node:path";
-import { CONFIG_FILE_URL } from "../constants/index.js";
+import { CONFIG_FILE_URL } from "../constants/index";
 
 export const configEnv = () => dotenv.config();
 
@@ -23,6 +23,7 @@ export const getConfig = () => {
       if (parsedData.token) return parsedData.token;
     }
   }
+
   throw new Error("Please login first");
 };
 
@@ -31,7 +32,7 @@ export const deleteConfig = () => isConfigExists() && fs.unlinkSync(CONFIG_FILE_
 // ? lock file
 export const isLockExists = () => {
   const lockPath = path.join(process.cwd(), ".gitoq.lock");
-  return { isExists: fs.existsSync(lockPath), path: lockPath };
+  return { path: lockPath, isExists: fs.existsSync(lockPath) };
 };
 
 export const dispatchLock = (token: string) => {

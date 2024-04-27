@@ -1,5 +1,5 @@
-import { TOptions, TOrvalOptions } from "./types.js";
-import { configEnv, deleteConfig, getConfig } from "../helper/index.js";
+import { TOptions, TOrvalOptions } from "./types";
+import { configEnv, deleteConfig, getConfig } from "../helper/index";
 
 configEnv();
 
@@ -7,7 +7,7 @@ const baseURL = process.env.BASE_URL as string;
 
 type TApi<T> = Promise<{ data: T; response: Response }>;
 
-export const api = async <T>({ data, headers, method, params, url }: TOrvalOptions, options?: TOptions): TApi<T> => {
+export const api = async <T>({ url, data, method, params, headers }: TOrvalOptions, options?: TOptions): TApi<T> => {
   try {
     url = baseURL + url;
     if (params) url += "?" + new URLSearchParams(params);
@@ -17,7 +17,7 @@ export const api = async <T>({ data, headers, method, params, url }: TOrvalOptio
     const configs: RequestInit = {
       method,
       body: JSON.stringify(data),
-      ...(options ?? {}),
+      ...options,
       headers: {
         ...headers,
         "Accept-Language": "en",
@@ -30,7 +30,9 @@ export const api = async <T>({ data, headers, method, params, url }: TOrvalOptio
     const json: T = await response.json();
     if (response.ok) {
       return { response, data: json };
-    } else throw json;
+    }
+
+ throw json;
   } catch (error: any) {
     error?.status === 401 && deleteConfig();
     throw error;
