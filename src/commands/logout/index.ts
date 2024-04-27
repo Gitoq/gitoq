@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import { apiCliLogout } from "../../services/index";
-import { deleteConfig, errorHandler } from "../../helper/index";
+import { apiCliLogout } from "../../services/index.js";
+import { deleteConfig, errorHandler } from "../../helper/index.js";
 
 export default class Login extends Command {
   static description = "Logout";

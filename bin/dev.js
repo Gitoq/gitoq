@@ -1,6 +1,5 @@
-#!/usr/bin/env node_modules/.bin/ts-node
-/* eslint-disable unicorn/prefer-module , unicorn/prefer-top-level-await */
-(async () => {
-  const oclif = await import("@oclif/core");
-  await oclif.execute({ dir: __dirname, development: true });
-})();
+#!/usr/bin/env -S node --loader ts-node/esm --no-warnings=ExperimentalWarning
+
+import {execute} from '@oclif/core'
+
+await execute({development: true, dir: import.meta.url})

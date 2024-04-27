@@ -1,6 +1,6 @@
 {
-  "extends": ["oclif", "oclif-typescript", "prettier"],
-  "plugins": ["perfectionist"],
+  "extends": ["oclif", "oclif-typescript", "prettier", "plugin:require-extensions/recommended"],
+  "plugins": ["perfectionist", "require-extensions"],
   "rules": {
     "n/shebang": "off",
     "valid-jsdoc": "off",
