@@ -1,5 +1,5 @@
-import { TOptions, TOrvalOptions } from "./types";
-import { configEnv, deleteConfig, getConfig } from "../helper/index";
+import { TOptions, TOrvalOptions } from "./types.js";
+import { configEnv, deleteConfig, getConfig } from "../helper/index.js";
 
 configEnv();
 
@@ -32,7 +32,7 @@ export const api = async <T>({ url, data, method, params, headers }: TOrvalOptio
       return { response, data: json };
     }
 
- throw json;
+    throw json;
   } catch (error: any) {
     error?.status === 401 && deleteConfig();
     throw error;

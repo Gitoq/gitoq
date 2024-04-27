@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable unicorn/prefer-module , unicorn/prefer-top-level-await */
-(async () => {
-  const oclif = await import("@oclif/core");
-  await oclif.execute({ dir: __dirname, development: false });
-})();
+
+import {execute} from '@oclif/core'
+
+await execute({dir: import.meta.url})

@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Args, Command } from "@oclif/core";
-import { cancelOperation, dispatchLock, errorHandler } from "../../helper/index";
-import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index";
+import { cancelOperation, dispatchLock, errorHandler } from "../../helper/index.js";
+import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index.js";
 
 export default class Connect extends Command {
   static args = { token: Args.string() };
@@ -15,7 +15,7 @@ export default class Connect extends Command {
     sp.start("loading 🔁");
 
     const { args } = await this.parse(Connect);
-    const {token} = args;
+    const { token } = args;
 
     if (token) {
       dispatchLock(token);

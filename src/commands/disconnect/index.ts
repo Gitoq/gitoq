@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import { deleteLock } from "../../helper/index";
+import { deleteLock } from "../../helper/index.js";
 
 export default class Disconnect extends Command {
   static description = "Disconnect";

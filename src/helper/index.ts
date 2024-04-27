@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import dotenv from "dotenv";
 import path from "node:path";
-import { CONFIG_FILE_URL } from "../constants/index";
+import { CONFIG_FILE_URL } from "../constants/index.js";
 
 export const configEnv = () => dotenv.config();
 

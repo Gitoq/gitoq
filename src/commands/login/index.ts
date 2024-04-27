@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
-import { apiCliLogin } from "../../services/index";
-import { dispatchConfig, errorHandler } from "../../helper/index";
+import { apiCliLogin } from "../../services/index.js";
+import { dispatchConfig, errorHandler } from "../../helper/index.js";
 
 const authorization =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzOTc0NzY3LCJleHAiOjE3MTY1NjY3Njd9.m1GDfnc2TnfkRMF92D0LdsLheGmIjhCFuxIujzwvh6o";
