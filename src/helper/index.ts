@@ -1,5 +1,6 @@
 import open from "open";
 import fs from "node:fs";
+import chalk from "chalk";
 import dotenv from "dotenv";
 import path from "node:path";
 import * as p from "@clack/prompts";
@@ -99,7 +100,7 @@ type TSp = {
 export const errorHandler = (sp: TSp) => (error: any) => sp.stop(error.message ?? "fetch failed !");
 
 export const cancelOperation = (p: any, message?: string) => {
-  p.cancel(message ?? "Operation cancelled. 😒");
+  p.cancel(message ?? "Operation cancelled.🙁");
   process.exit(0);
 };
 
@@ -110,19 +111,37 @@ const browserLoginHeader = {
   "Access-Control-Allow-Origin": process.env.FRONT_BASE_URL,
 };
 
-export const browser = async <T>({ sp, url, port }: { sp: TSp; url: string; port: number }) => {
-  const cp = await open(url);
+type TBrowserOptions = {
+  sp: TSp;
+  url: string;
+  port: number;
+  waitingMessage: string;
+  params?: string | string[][] | URLSearchParams | Record<string, string>;
+};
+
+export const browser = async <T>({ sp, url, port, params, waitingMessage }: TBrowserOptions) => {
+  sp.start(`"Opening browser 🔁"`);
+
+  const queue = new URLSearchParams(params);
+  queue.set("port", String(port));
+
+  const encryptQuery = new URLSearchParams();
+  const encryptValue = await encrypt("CLI", queue.toString());
+  encryptQuery.set("=", encryptValue);
+
+  const href = `${process.env.FRONT_BASE_URL}${url}?${encryptQuery.toString()}`;
+
+  const op = await open(href);
 
   return new Promise<T>((resolve, reject) => {
-    cp.on("error", async (err) => {
-      reject(err);
+    op.on("error", () => {
+      sp.stop(`please open ${chalk.gray(href)} your browser`);
     });
 
-    cp.on("exit", (code) => {
+    op.on("exit", (code) => {
       if (code === 0) {
         sp.stop("Browser opened");
-
-        sp.start("Waiting for login");
+        sp.start(waitingMessage);
       }
     });
 

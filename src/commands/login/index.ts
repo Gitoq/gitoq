@@ -1,10 +1,10 @@
+import chalk from "chalk";
 import dotenv from "dotenv";
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import getPort, { portNumbers } from "get-port";
-import { encrypt } from "../../helper/crypto.js";
 import { apiCliLogin } from "../../services/index.js";
-import { browser, dispatchConfig, errorHandler } from "../../helper/index.js";
+import { browser, cancelOperation, dispatchConfig, errorHandler, isConfigExists } from "../../helper/index.js";
 
 dotenv.config();
 
@@ -16,21 +16,19 @@ export default class Login extends Command {
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
   async run(): Promise<void> {
-    p.intro("Welcome to Gitoq CLI! 🚀");
+    if (isConfigExists()) cancelOperation(p, "You are already logged in");
+
     const sp = p.spinner();
-    sp.start("Opening browser 🔁");
 
     try {
       const port = await getPort({ port: portNumbers(3001, 3100) });
-      const query = `callback-api=http://localhost:${port}/callback`;
-      const url = `${process.env.VERIFY_TRANSFER_WORKSPACE_CALLBACK_ROUTE}?${await encrypt("CLI", query)}`;
-      const { token } = await browser<TBrowserLoginResponse>({ sp, url, port });
-      await apiCliLogin({ headers: { authorization: token } })
-        .then(({ data }) => {
-          dispatchConfig(data.token);
-          sp.stop("welcome 🎉");
-        })
-        .catch(errorHandler(sp));
+      const options = { sp, port, url: "/api/cli/verify-login", waitingMessage: "Waiting for login 🔁" };
+      const { token } = await browser<TBrowserLoginResponse>(options);
+      const { data } = await apiCliLogin({ headers: { authorization: token } });
+      dispatchConfig(data.token);
+      sp.stop("Logged to Gitoq CLI 🚀");
+      const noteDescription = `Connect your project.        \nRun the connect command:        \n${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("connect")}`;
+      p.note(noteDescription, chalk.bold("Next step"));
     } catch (error) {
       errorHandler(sp)(error);
     }
