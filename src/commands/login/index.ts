@@ -1,10 +1,13 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
+import getPort, { portNumbers } from "get-port";
+import { encrypt } from "../../helper/crypto.js";
 import { apiCliLogin } from "../../services/index.js";
-import { dispatchConfig, errorHandler } from "../../helper/index.js";
+import { browser, configEnv, dispatchConfig, errorHandler } from "../../helper/index.js";
 
-const authorization =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImlkIjoxfSwiaWF0IjoxNzEzOTc0NzY3LCJleHAiOjE3MTY1NjY3Njd9.m1GDfnc2TnfkRMF92D0LdsLheGmIjhCFuxIujzwvh6o";
+configEnv();
+
+type TBrowserLoginResponse = { token: string };
 
 export default class Login extends Command {
   static description = "Login";
@@ -14,13 +17,21 @@ export default class Login extends Command {
   async run(): Promise<void> {
     p.intro("Welcome to Gitoq CLI! 🚀");
     const sp = p.spinner();
-    sp.start("loading 🔁");
+    sp.start("Opening browser 🔁");
 
-    await apiCliLogin({ headers: { authorization } })
-      .then(({ data }) => {
-        dispatchConfig(data.token);
-        sp.stop("welcome 🎉");
-      })
-      .catch(errorHandler(sp));
+    try {
+      const port = await getPort({ port: portNumbers(3001, 3100) });
+      const query = `callback-api=http://localhost:${port}/callback`;
+      const url = `${process.env.VERIFY_TRANSFER_WORKSPACE_CALLBACK_ROUTE}?${await encrypt("CLI", query)}`;
+      const { token } = await browser<TBrowserLoginResponse>({ sp, url, port });
+      await apiCliLogin({ headers: { authorization: token } })
+        .then(({ data }) => {
+          dispatchConfig(data.token);
+          sp.stop("welcome 🎉");
+        })
+        .catch(errorHandler(sp));
+    } catch (error) {
+      errorHandler(sp)(error);
+    }
   }
 }

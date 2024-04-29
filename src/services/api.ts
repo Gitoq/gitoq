@@ -3,7 +3,7 @@ import { configEnv, deleteConfig, getConfig } from "../helper/index.js";
 
 configEnv();
 
-const baseURL = process.env.BASE_URL as string;
+const baseURL = process.env.BACK_BASE_URL as string;
 
 type TApi<T> = Promise<{ data: T; response: Response }>;
 

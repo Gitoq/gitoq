@@ -1,9 +1,12 @@
+import open from "open";
 import fs from "node:fs";
 import dotenv from "dotenv";
 import path from "node:path";
+import { createServer } from "node:http";
 import { CONFIG_FILE_URL } from "../constants/index.js";
 
-export const configEnv = () => dotenv.config();
+export const configEnv = dotenv.config;
+configEnv();
 
 // ? config file
 type TJsonFileContent = { token: string };
@@ -51,9 +54,66 @@ type TSp = {
   start: (msg?: string | undefined) => void;
   message: (msg?: string | undefined) => void;
 };
+
 export const errorHandler = (sp: TSp) => (error: any) => sp.stop(error.message ?? "fetch failed !");
 
 export const cancelOperation = (p: any, message?: string) => {
   p.cancel(message ?? "Operation cancelled. 😒");
   process.exit(0);
+};
+
+const browserLoginHeader = {
+  Connection: "close",
+  "Access-Control-Allow-Methods": "*",
+  "Access-Control-Allow-Headers": "*",
+  "Access-Control-Allow-Origin": process.env.FRONT_BASE_URL,
+};
+
+export const browser = async <T>({ sp, url, port }: { sp: TSp; url: string; port: number }) => {
+  const cp = await open(url);
+
+  return new Promise<T>((resolve, reject) => {
+    cp.on("error", async (err) => {
+      reject(err);
+    });
+
+    cp.on("exit", (code) => {
+      if (code === 0) {
+        sp.stop("Browser opened");
+
+        sp.start("Waiting for login");
+      }
+    });
+
+    const server = createServer(async (req, res) => {
+      if (req.method === "OPTIONS") {
+        res.writeHead(204, browserLoginHeader);
+        res.end();
+        return;
+      }
+
+      if (req.url === "/callback" && req.method === "POST") {
+        let body = "";
+
+        req.on("data", (chunk) => {
+          body += chunk.toString();
+        });
+
+        req.on("end", () => {
+          try {
+            res.writeHead(200, browserLoginHeader);
+            resolve(JSON.parse(body));
+            res.end();
+            server.close();
+          } catch (error) {
+            res.writeHead(400, browserLoginHeader);
+            reject(error);
+            errorHandler(sp)(error);
+            res.end();
+            server.close();
+          }
+        });
+      }
+    }).listen(port);
+  });
 };
