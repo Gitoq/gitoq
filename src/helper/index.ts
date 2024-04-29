@@ -1,5 +1,6 @@
 import open from "open";
 import fs from "node:fs";
+import chalk from "chalk";
 import dotenv from "dotenv";
 import path from "node:path";
 import { encrypt } from "./crypto.js";
@@ -79,7 +80,7 @@ type TBrowserOptions = {
 };
 
 export const browser = async <T>({ sp, url, port, params, waitingMessage }: TBrowserOptions) => {
-  sp.start("Opening browser 🔁");
+  sp.start(`"Opening browser 🔁"`);
 
   const queue = new URLSearchParams(params);
   queue.set("port", String(port));
@@ -88,14 +89,16 @@ export const browser = async <T>({ sp, url, port, params, waitingMessage }: TBro
   const encryptValue = await encrypt("CLI", queue.toString());
   encryptQuery.set("=", encryptValue);
 
-  const cp = await open(`${process.env.FRONT_BASE_URL}${url}?${encryptQuery.toString()}`);
+  const href = `${process.env.FRONT_BASE_URL}${url}?${encryptQuery.toString()}`;
+
+  const op = await open(href);
 
   return new Promise<T>((resolve, reject) => {
-    cp.on("error", async (err) => {
-      reject(err);
+    op.on("error", () => {
+      sp.stop(`please open ${chalk.gray(href)} your browser`);
     });
 
-    cp.on("exit", (code) => {
+    op.on("exit", (code) => {
       if (code === 0) {
         sp.stop("Browser opened");
         sp.start(waitingMessage);
