@@ -1,11 +1,12 @@
+import dotenv from "dotenv";
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import getPort, { portNumbers } from "get-port";
 import { encrypt } from "../../helper/crypto.js";
 import { apiCliLogin } from "../../services/index.js";
-import { browser, configEnv, dispatchConfig, errorHandler } from "../../helper/index.js";
+import { browser, dispatchConfig, errorHandler } from "../../helper/index.js";
 
-configEnv();
+dotenv.config();
 
 type TBrowserLoginResponse = { token: string };
 
