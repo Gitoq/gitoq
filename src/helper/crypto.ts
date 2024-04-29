@@ -1,7 +1,7 @@
+import dotenv from "dotenv";
 import cryptoJs from "crypto-js";
-import { configEnv } from "./index.js";
 
-configEnv();
+dotenv.config();
 
 type TKey = "ENV" | "CLI";
 

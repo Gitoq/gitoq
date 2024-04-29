@@ -9,5 +9,5 @@
   },
   "peacock.color": "#85C4CC",
   "conventionalCommits.scopes": ["global", "constants", "helper", "services", "commands", "configs", "conflict", "bin"],
-  "cSpell.words": ["gitoq", "oclif", "postpack", "posttest"]
+  "cSpell.words": ["gitoq", "oclif", "outro", "postpack", "posttest"]
 }
