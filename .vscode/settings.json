@@ -8,5 +8,6 @@
     "titleBar.inactiveForeground": "#15202b99"
   },
   "peacock.color": "#85C4CC",
-  "conventionalCommits.scopes": ["global", "constants", "helper", "services", "commands", "configs"]
+  "conventionalCommits.scopes": ["global", "constants", "helper", "services", "commands", "configs", "conflict", "bin"],
+  "cSpell.words": ["gitoq", "oclif", "postpack", "posttest"]
 }

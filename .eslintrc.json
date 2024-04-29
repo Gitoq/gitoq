@@ -1,8 +1,24 @@
 {
-  "extends": ["prettier"],
+  "extends": ["oclif", "oclif-typescript", "prettier", "plugin:require-extensions/recommended"],
+  "plugins": ["perfectionist", "require-extensions"],
   "rules": {
+    "n/shebang": "off",
+    "valid-jsdoc": "off",
+    "no-return-await": "off",
     "no-process-exit": "off",
     "n/no-process-exit": "off",
-    "unicorn/no-process-exit": "off"
+    "unicorn/no-process-exit": "off",
+    "import/no-named-as-default-member": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "perfectionist/sort-enums": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-imports": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-exports": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-objects": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-jsx-props": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-interfaces": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-union-types": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-object-types": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-array-includes": ["error", { "type": "line-length", "order": "asc" }],
+    "perfectionist/sort-intersection-types": ["error", { "type": "line-length", "order": "asc" }]
   }
 }
