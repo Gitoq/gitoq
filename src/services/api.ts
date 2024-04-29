@@ -1,7 +1,8 @@
+import dotenv from "dotenv";
 import { TOptions, TOrvalOptions } from "./types.js";
-import { configEnv, deleteConfig, getConfig } from "../helper/index.js";
+import { deleteConfig, getConfig } from "../helper/index.js";
 
-configEnv();
+dotenv.config();
 
 const baseURL = process.env.BACK_BASE_URL as string;
 
