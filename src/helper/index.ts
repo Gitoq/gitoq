@@ -29,7 +29,9 @@ type TBrowserOptions = {
 };
 
 export const regex = {
+  removeSpace: / /g,
   envKeyValue: /^(.*?)=(.*)$/gm,
+  removeEnter: /^[\n\r]+|[\n\r]+$/g,
   envRemoveDefaultContent: /#\/-+ gitoq -+\/[\S\s]*?#\/-+ .env.* -+\//,
 };
 
@@ -74,7 +76,7 @@ export const getLock = (spinner?: TSpinner): TEnvParsOption => {
   const { path, isExists } = isLockExists();
   if (isExists) {
     const content = fs.readFileSync(path, { encoding: "utf8" });
-    return envParser(content);
+    return lockEnvParser(content);
   }
 
   cancelOperation({ spinner, message: messages.project.connect });
@@ -84,16 +86,18 @@ export const getLock = (spinner?: TSpinner): TEnvParsOption => {
 
 // ? env file
 export const isEnvExists = () => {
-  const envPaths = [".env.local"];
-  const foundPath = envPaths.find((pathname) => fs.existsSync(path.join(process.cwd(), pathname)));
-  return { isExists: Boolean(foundPath), path: foundPath ?? envPaths[0] };
+  const pathname = ".env.local";
+  const isExists = fs.existsSync(path.join(process.cwd(), pathname));
+  return { isExists, path: pathname };
 };
 
 export const getEnvContent = async (spinner?: TSpinner) => {
   const { path, isExists } = isEnvExists();
   if (isExists) {
     let content = fs.readFileSync(path, { encoding: "utf8" });
+    content = envTrimer(content);
     content = content.replace(regex.envRemoveDefaultContent, "");
+    content = content.replace(regex.removeEnter, "");
     return await encrypt("ENV", content);
   }
 
@@ -104,8 +108,7 @@ export const getEnvContent = async (spinner?: TSpinner) => {
 export const dispatchEnvContent = async (content: string, name: string) => {
   const { path } = isEnvExists();
   const encryptedContent = await decrypt("ENV", content);
-
-  fs.writeFileSync(path, `${defaultEnvContent(name)}${encryptedContent}`, { flag: "w+" });
+  fs.writeFileSync(path, `${defaultEnvContent(name)}\n${encryptedContent}`, { flag: "w+" });
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
@@ -186,15 +189,16 @@ export const commandNote = ({ title, description }: { title: string; description
   p.note(noteDescription.join(""), chalk.bold(title));
 };
 
-export const trimerEnv = (content: string) =>
+export const envTrimer = (content: string) =>
   content
     .split("\n")
     .map((item) => {
       regex.envKeyValue.lastIndex = 0;
       const match = regex.envKeyValue.exec(item);
-      return match ? `${match[1].trim()}=${match[2].trim()}` : item.trim();
+      return match ? `${match[1].replace(regex.removeSpace, "")}=${match[2].replace(regex.removeSpace, "")}` : item.trim();
     })
-    .join("\n");
+    .join("\n")
+    .trim();
 
 export const envStringify = (parseEnv: TEnvStringOptions) =>
   parseEnv.reduce<string>((prev, current) => {
@@ -202,7 +206,7 @@ export const envStringify = (parseEnv: TEnvStringOptions) =>
     return `${prev}\n`;
   }, "");
 
-export const envParser = (content: string) =>
+export const lockEnvParser = (content: string) =>
   content.split("\n").reduce<TEnvParsOption>(
     (prev, current) => {
       regex.envKeyValue.lastIndex = 0;
@@ -216,8 +220,9 @@ export const envParser = (content: string) =>
 export const defaultEnvContent = (name: string) => {
   const content = `
 #/------------------------ gitoq ------------------------/
-# Your data's safety is our top priority!         
-# [learn more] (${process.env.FRONT_BASE_URL})   
-#/----------------- .env.${name} -------------------/`;
-  return content.replace(/^\n|\n$/g, "");
+# Your data's safety is our top priority!
+# [learn more] (${process.env.FRONT_BASE_URL})
+#/----------------- .env.${name} -------------------/
+`;
+  return content.replace(regex.removeEnter, "");
 };

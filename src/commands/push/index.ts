@@ -1,8 +1,17 @@
+import chalk from "chalk";
 import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPush } from "../../services/index.js";
-import { cancelOperation, getEnvContent, getLock } from "../../helper/index.js";
+import { cancelOperation, commandNote, getEnvContent, getLock } from "../../helper/index.js";
+
+const description = [
+  "You can pull the latest changes too.",
+  "Run the pull command:",
+  `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("pull")}`,
+  "Or run:",
+  `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("pull")} -l`,
+];
 
 export default class Push extends Command {
   static description = "Push";
@@ -38,12 +47,18 @@ export default class Push extends Command {
         spinner.start(messages.loading);
 
         await apiCliPush(token, env.toString(), { content })
-          .then(() => spinner.stop(messages.env.pushed))
+          .then(({ data }) => {
+            spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(data.env.name)));
+            commandNote({ description, title: messages.nextStep });
+          })
           .catch((error) => cancelOperation({ spinner, message: error.message }));
       } else cancelOperation({ spinner });
     } else {
       await apiCliPush(token, "", { content })
-        .then(() => spinner.stop(messages.env.pushed))
+        .then(({ data }) => {
+          spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(data.env.name)));
+          commandNote({ description, title: messages.nextStep });
+        })
         .catch((error) => cancelOperation({ spinner, message: error.message }));
     }
 

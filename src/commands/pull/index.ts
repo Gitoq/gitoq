@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
@@ -39,7 +40,7 @@ export default class Pull extends Command {
         await apiCliPull(token, env.toString())
           .then(async ({ data }) => {
             await dispatchEnvContent(data.env.content, data.env.name);
-            spinner.stop(messages.env.pulled);
+            spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(data.env.name)));
           })
           .catch((error) => cancelOperation({ spinner, message: error.message }));
       } else cancelOperation({ spinner });
@@ -47,7 +48,7 @@ export default class Pull extends Command {
       await apiCliPull(token, "")
         .then(async ({ data }) => {
           await dispatchEnvContent(data.env.content, data.env.name);
-          spinner.stop(messages.env.pulled);
+          spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(data.env.name)));
         })
         .catch((error) => cancelOperation({ spinner, message: error.message }));
     }

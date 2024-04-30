@@ -6,11 +6,11 @@ import { cancelOperation, commandNote, dispatchLock } from "../../helper/index.j
 import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index.js";
 
 const description = [
-  "You can pull the latest changes too.",
-  "Run the pull command:",
-  `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("pull")}`,
+  "You can push the latest changes too.",
+  "Run the push command:",
+  `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("push")}`,
   "Or run:",
-  `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("pull")} YOUR_CUSTOM_ENV_NAME`,
+  `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("push")} -l`,
 ];
 
 export default class Connect extends Command {
@@ -69,7 +69,7 @@ export default class Connect extends Command {
           dispatchLock([{ key: "token", value: token }]);
 
           p.log.message();
-          spinner.stop(`${name} ${messages.project.selected}`);
+          spinner.stop(messages.project.selected.replace("{name}", name));
         } else cancelOperation({ spinner });
       } else cancelOperation({ spinner });
 

@@ -16,6 +16,7 @@ export type ApiCliPull200 = {
 };
 
 export type ApiCliPush200 = {
+  env: Env;
   message?: string;
 };
 
