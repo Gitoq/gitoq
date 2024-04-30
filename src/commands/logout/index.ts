@@ -10,14 +10,15 @@ export default class Logout extends Command {
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
   async run(): Promise<void> {
-    const sp = p.spinner();
-    sp.start(messages.loading);
+    const spinner = p.spinner();
+    spinner.start(messages.loading);
 
     await apiCliLogout()
       .then(({ data }) => {
         deleteConfig();
-        sp.stop(data.message);
+        spinner.stop(data.message);
       })
-      .catch(errorHandler(sp));
+      .catch(errorHandler(spinner));
+    p.log.message();
   }
 }

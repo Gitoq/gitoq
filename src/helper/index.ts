@@ -29,9 +29,6 @@ export const getConfig = () => {
       if (parsedData.token) return parsedData.token;
     }
   }
-
-  p.cancel(messages.authError);
-  return "";
 };
 
 export const deleteConfig = () => isConfigExists() && fs.unlinkSync(CONFIG_FILE_URL);
@@ -52,7 +49,7 @@ export const deleteLock = () => {
   isExists && fs.unlinkSync(path);
 };
 
-export const getLock = () => {
+export const getLock = (spinner?: TSpinner) => {
   const { path, isExists } = isLockExists();
   if (isExists) {
     const content = fs.readFileSync(path, { encoding: "utf8" });
@@ -62,8 +59,10 @@ export const getLock = () => {
     }
   }
 
-  p.cancel(messages.project.connect);
-  return "";
+  if (spinner) spinner.stop(chalk.redBright(messages.project.connect));
+  else p.cancel(chalk.redBright(messages.project.connect));
+  p.log.message();
+  process.exit(0);
 };
 
 // ? env file
@@ -73,15 +72,17 @@ export const isEnvExists = () => {
   return { isExists: Boolean(foundPath), path: foundPath ?? envPaths[0] };
 };
 
-export const getEnvContent = async () => {
+export const getEnvContent = async (spinner?: TSpinner) => {
   const { path, isExists } = isEnvExists();
   if (isExists) {
     const content = fs.readFileSync(path, { encoding: "utf8" });
     return await encrypt("ENV", content);
   }
 
-  p.cancel(messages.env.notFound);
-  return "";
+  if (spinner) spinner.stop(chalk.redBright(messages.env.notFound));
+  else p.cancel(chalk.redBright(messages.env.notFound));
+  p.log.message();
+  process.exit(0);
 };
 
 export const dispatchEnvContent = async (content: string) => {
@@ -91,16 +92,19 @@ export const dispatchEnvContent = async (content: string) => {
 };
 
 // ? error handler
-type TSp = {
+type TSpinner = {
   stop: (msg?: string | undefined) => void;
   start: (msg?: string | undefined) => void;
   message: (msg?: string | undefined) => void;
 };
 
-export const errorHandler = (sp: TSp) => (error: any) => sp.stop(error.message ?? messages.error);
+export const errorHandler = (spinner: TSpinner) => (error: any) => {
+  spinner.stop(chalk.redBright(error?.message ?? messages.error));
+};
 
-export const cancelOperation = (p: any, message?: string) => {
+export const cancelOperation = (message?: string) => {
   p.cancel(message ?? messages.cancel);
+  p.log.message();
   process.exit(0);
 };
 
@@ -112,15 +116,15 @@ const browserLoginHeader = {
 };
 
 type TBrowserOptions = {
-  sp: TSp;
   url: string;
   port: number;
+  spinner: TSpinner;
   waitingMessage: string;
   params?: string | string[][] | URLSearchParams | Record<string, string>;
 };
 
-export const browser = async <T>({ sp, url, port, params, waitingMessage }: TBrowserOptions) => {
-  sp.start(`"Opening browser 🔁"`);
+export const browser = async <T>({ url, port, params, spinner, waitingMessage }: TBrowserOptions) => {
+  spinner.start(`"Opening browser 🔁"`);
 
   const queue = new URLSearchParams(params);
   queue.set("port", String(port));
@@ -131,17 +135,17 @@ export const browser = async <T>({ sp, url, port, params, waitingMessage }: TBro
 
   const href = `${process.env.FRONT_BASE_URL}${url}?${encryptQuery.toString()}`;
 
-  const op = await open(href);
+  const openResult = await open(href);
 
   return new Promise<T>((resolve, reject) => {
-    op.on("error", () => {
-      sp.stop(`please open ${chalk.gray(href)} your browser`);
+    openResult.on("error", () => {
+      spinner.stop(`please open ${chalk.gray(href)} your browser`);
     });
 
-    op.on("exit", (code) => {
+    openResult.on("exit", (code) => {
       if (code === 0) {
-        sp.stop("Browser opened");
-        sp.start(waitingMessage);
+        spinner.stop("Browser opened");
+        spinner.start(waitingMessage);
       }
     });
 
@@ -168,7 +172,7 @@ export const browser = async <T>({ sp, url, port, params, waitingMessage }: TBro
           } catch (error) {
             res.writeHead(400, browserLoginHeader);
             reject(error);
-            errorHandler(sp)(error);
+            errorHandler(spinner)(error);
             res.end();
             server.close();
           }

@@ -12,8 +12,8 @@ export default class Connect extends Command {
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
   async run(): Promise<void> {
-    const sp = p.spinner();
-    sp.start(messages.loading);
+    const spinner = p.spinner();
+    spinner.start(messages.loading);
 
     const { args } = await this.parse(Connect);
     const { token } = args;
@@ -21,16 +21,16 @@ export default class Connect extends Command {
     if (token) {
       dispatchLock(token);
 
-      sp.stop(messages.project.remote);
+      spinner.stop(messages.project.remote);
     } else {
       const workspaces = await apiCliUserWorkspaces()
         .then(({ data }) => data.workspaces)
-        .catch(errorHandler(sp));
+        .catch(errorHandler(spinner));
 
-      sp.stop();
+      spinner.stop();
 
       if (workspaces) {
-        if (workspaces.length === 0) cancelOperation(p, messages.workspace.notFound);
+        if (workspaces.length === 0) cancelOperation(messages.workspace.notFound);
 
         const workspace = await p.select({
           initialValue: workspaces[0].id,
@@ -38,18 +38,18 @@ export default class Connect extends Command {
           options: workspaces.map(({ id, name }) => ({ value: id, label: name })),
         });
 
-        if (p.isCancel(workspace)) cancelOperation(p);
+        if (p.isCancel(workspace)) cancelOperation();
 
-        sp.start(messages.loading);
+        spinner.start(messages.loading);
 
         const projects = await apiCliWorkspaceProjects(workspace as number)
           .then(({ data }) => data.projects)
-          .catch(errorHandler(sp));
+          .catch(errorHandler(spinner));
 
-        sp.stop();
+        spinner.stop();
 
         if (projects) {
-          if (projects.length === 0) cancelOperation(p, messages.project.notFound);
+          if (projects.length === 0) cancelOperation(messages.project.notFound);
 
           const project = await p.select({
             initialValue: projects[0].id,
@@ -57,15 +57,15 @@ export default class Connect extends Command {
             options: projects.map(({ id, name }) => ({ value: id, label: name })),
           });
 
-          if (p.isCancel(project)) cancelOperation(p);
+          if (p.isCancel(project)) cancelOperation();
 
           const { name, token } = projects.find((item) => item.id === project)!;
 
           dispatchLock(token);
 
-          sp.stop(`${name} now selected ✅`);
-        } else cancelOperation(p);
-      } else cancelOperation(p);
+          spinner.stop(`${name} now selected ✅`);
+        } else cancelOperation();
+      } else cancelOperation();
     }
   }
 }

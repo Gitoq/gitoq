@@ -12,20 +12,20 @@ export default class Push extends Command {
   static flags = { list: Flags.boolean({ char: "l" }) };
 
   async run(): Promise<void> {
-    const sp = p.spinner();
-    sp.start(messages.loading);
+    const spinner = p.spinner();
+    spinner.start(messages.loading);
 
-    const token = getLock();
-    const content = await getEnvContent();
+    const token = getLock(spinner);
+    const content = await getEnvContent(spinner);
 
     const { flags } = await this.parse(Push);
 
     if (flags.list) {
       const envs = await apiCliProjectEnvs(token)
         .then((res) => res.data.envs)
-        .catch(errorHandler(sp));
+        .catch(errorHandler(spinner));
 
-      sp.stop();
+      spinner.stop();
 
       if (envs) {
         const env = await p.select({
@@ -34,16 +34,18 @@ export default class Push extends Command {
           options: envs.map(({ id, name }) => ({ value: id, label: name })),
         });
 
-        sp.start(messages.loading);
+        spinner.start(messages.loading);
 
         await apiCliPush(token, env.toString(), { content })
-          .then(() => sp.stop(messages.env.pushed))
-          .catch(errorHandler(sp));
-      } else cancelOperation(p);
+          .then(() => spinner.stop(messages.env.pushed))
+          .catch(errorHandler(spinner));
+      } else cancelOperation();
     } else {
       await apiCliPush(token, "", { content })
-        .then(() => sp.stop(messages.env.pushed))
-        .catch(errorHandler(sp));
+        .then(() => spinner.stop(messages.env.pushed))
+        .catch(errorHandler(spinner));
     }
+
+    p.log.message();
   }
 }

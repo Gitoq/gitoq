@@ -9,11 +9,12 @@ export default class Disconnect extends Command {
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
   async run(): Promise<void> {
-    const sp = p.spinner();
-    sp.start(messages.loading);
+    const spinner = p.spinner();
+    spinner.start(messages.loading);
 
     deleteLock();
 
-    sp.stop(messages.project.disconnected);
+    spinner.stop(messages.project.disconnected);
+    p.log.message();
   }
 }
