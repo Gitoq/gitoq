@@ -11,13 +11,33 @@ import { CONFIG_FILE_URL } from "../constants/index.js";
 
 dotenv.config();
 
+type TConfigFileContent = { token: string };
+type TEnvParsOption = { token: string };
+type TEnvStringOptions = { key: string; value?: string }[];
+
+type TSpinner = {
+  stop: (msg?: string | undefined) => void;
+  start: (msg?: string | undefined) => void;
+  message: (msg?: string | undefined) => void;
+};
+type TBrowserOptions = {
+  url: string;
+  port: number;
+  spinner: TSpinner;
+  waitingMessage: string;
+  params?: string | string[][] | URLSearchParams | Record<string, string>;
+};
+
+export const regex = {
+  envKeyValue: /^(.*?)=(.*)$/gm,
+};
+
 // ? config file
-type TJsonFileContent = { token: string };
 
 export const isConfigExists = () => fs.existsSync(CONFIG_FILE_URL);
 
 export const dispatchConfig = (token: string) => {
-  const content: TJsonFileContent = { token };
+  const content: TConfigFileContent = { token };
   fs.writeFileSync(CONFIG_FILE_URL, JSON.stringify(content), { flag: "w+" });
 };
 
@@ -25,7 +45,7 @@ export const getConfig = () => {
   if (isConfigExists()) {
     const content = fs.readFileSync(CONFIG_FILE_URL, { encoding: "utf8" });
     if (content) {
-      const parsedData = JSON.parse(content) as TJsonFileContent;
+      const parsedData = JSON.parse(content) as TConfigFileContent;
       if (parsedData.token) return parsedData.token;
     }
   }
@@ -35,13 +55,13 @@ export const deleteConfig = () => isConfigExists() && fs.unlinkSync(CONFIG_FILE_
 
 // ? lock file
 export const isLockExists = () => {
-  const lockPath = path.join(process.cwd(), ".gitoq.lock");
+  const lockPath = path.join(process.cwd(), ".env.gitoq.lock");
   return { path: lockPath, isExists: fs.existsSync(lockPath) };
 };
 
-export const dispatchLock = (token: string) => {
-  const dest = path.join(process.cwd(), ".gitoq.lock");
-  fs.writeFileSync(dest, JSON.stringify({ token }), { flag: "w+" });
+export const dispatchLock = (values: TEnvStringOptions) => {
+  const dest = path.join(process.cwd(), ".env.gitoq.lock");
+  fs.writeFileSync(dest, envStringify(values), { flag: "w+" });
 };
 
 export const deleteLock = () => {
@@ -49,24 +69,21 @@ export const deleteLock = () => {
   isExists && fs.unlinkSync(path);
 };
 
-export const getLock = (spinner?: TSpinner) => {
+export const getLock = (spinner?: TSpinner): TEnvParsOption => {
   const { path, isExists } = isLockExists();
   if (isExists) {
     const content = fs.readFileSync(path, { encoding: "utf8" });
-    if (content) {
-      const parsedData = JSON.parse(content) as TJsonFileContent;
-      if (parsedData.token) return parsedData.token;
-    }
+    return envParser(content);
   }
 
   cancelOperation({ spinner, message: messages.project.connect });
 
-  return "";
+  return { token: "" };
 };
 
 // ? env file
 export const isEnvExists = () => {
-  const envPaths = [".env.test"];
+  const envPaths = [".env.local"];
   const foundPath = envPaths.find((pathname) => fs.existsSync(path.join(process.cwd(), pathname)));
   return { isExists: Boolean(foundPath), path: foundPath ?? envPaths[0] };
 };
@@ -89,17 +106,10 @@ export const dispatchEnvContent = async (content: string) => {
   fs.writeFileSync(path, encryptedContent, { flag: "w+" });
 };
 
-// ? error handler
-type TSpinner = {
-  stop: (msg?: string | undefined) => void;
-  start: (msg?: string | undefined) => void;
-  message: (msg?: string | undefined) => void;
-};
-
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
   if (options?.spinner) options.spinner.stop(chalk.redBright(options.message ?? messages.cancel));
   else p.cancel(chalk.redBright(options?.message ?? messages.cancel));
-  p.log.message();
+  p.outro(`${messages.needHelp} ${chalk.underline(chalk.cyan(`${process.env.FRONT_BASE_URL}/docs`))}`);
   process.exit(0);
 };
 
@@ -108,14 +118,6 @@ const browserLoginHeader = {
   "Access-Control-Allow-Methods": "*",
   "Access-Control-Allow-Headers": "*",
   "Access-Control-Allow-Origin": process.env.FRONT_BASE_URL,
-};
-
-type TBrowserOptions = {
-  url: string;
-  port: number;
-  spinner: TSpinner;
-  waitingMessage: string;
-  params?: string | string[][] | URLSearchParams | Record<string, string>;
 };
 
 export const browser = async <T>({ url, port, params, spinner, waitingMessage }: TBrowserOptions) => {
@@ -134,7 +136,7 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
 
   return new Promise<T>((resolve, reject) => {
     openResult.on("error", () => {
-      spinner.stop(`please open ${chalk.gray(href)} your browser`);
+      spinner.stop(`please open ${chalk.underline(chalk.gray(href))} your browser`);
     });
 
     openResult.on("exit", (code) => {
@@ -181,3 +183,30 @@ export const commandNote = ({ title, description }: { title: string; description
   const noteDescription = description.map((item, index) => `${item}         ${description.length === index + 1 ? "" : "\n"}`);
   p.note(noteDescription.join(""), chalk.bold(title));
 };
+
+export const trimerEnv = (content: string) =>
+  content
+    .split("\n")
+    .map((item) => {
+      regex.envKeyValue.lastIndex = 0;
+      const match = regex.envKeyValue.exec(item);
+      return match ? `${match[1].trim()}=${match[2].trim()}` : item.trim();
+    })
+    .join("\n");
+
+export const envStringify = (parseEnv: TEnvStringOptions) =>
+  parseEnv.reduce<string>((prev, current) => {
+    prev += current.key && current.value ? `${current.key}=${current.value}` : current.key;
+    return `${prev}\n`;
+  }, "");
+
+export const envParser = (content: string) =>
+  content.split("\n").reduce<TEnvParsOption>(
+    (prev, current) => {
+      regex.envKeyValue.lastIndex = 0;
+      const match = regex.envKeyValue.exec(current);
+      if (match && ["token"].includes(match[1])) prev = { ...prev, [match[1]]: match[2] };
+      return prev;
+    },
+    { token: "" },
+  );

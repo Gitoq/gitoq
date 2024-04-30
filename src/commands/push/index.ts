@@ -15,7 +15,7 @@ export default class Push extends Command {
     const spinner = p.spinner();
     spinner.start(messages.loading);
 
-    const token = getLock(spinner);
+    const { token } = getLock(spinner);
     const content = await getEnvContent(spinner);
 
     const { flags } = await this.parse(Push);

@@ -10,6 +10,7 @@
     "unicorn/no-process-exit": "off",
     "import/no-named-as-default-member": "off",
     "@typescript-eslint/no-explicit-any": "off",
+    "unicorn/no-array-reduce": "off",
     "perfectionist/sort-enums": ["error", { "type": "line-length", "order": "asc" }],
     "perfectionist/sort-imports": ["error", { "type": "line-length", "order": "asc" }],
     "perfectionist/sort-exports": ["error", { "type": "line-length", "order": "asc" }],

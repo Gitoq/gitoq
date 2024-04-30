@@ -28,7 +28,7 @@ export default class Connect extends Command {
     const { token } = args;
 
     if (token) {
-      dispatchLock(token);
+      dispatchLock([{ key: "token", value: token }]);
       spinner.stop(messages.project.remote);
       commandNote({ description, title: messages.nextStep });
     } else {
@@ -66,8 +66,7 @@ export default class Connect extends Command {
           if (p.isCancel(project)) cancelOperation({ spinner });
 
           const { name, token } = projects.find((item) => item.id === project)!;
-
-          dispatchLock(token);
+          dispatchLock([{ key: "token", value: token }]);
 
           p.log.message();
           spinner.stop(`${name} ${messages.project.selected}`);

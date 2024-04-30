@@ -15,7 +15,7 @@ export default class Pull extends Command {
     const spinner = p.spinner();
     spinner.start(messages.loading);
 
-    const token = getLock(spinner);
+    const { token } = getLock(spinner);
 
     const { flags } = await this.parse(Pull);
 

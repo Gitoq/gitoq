@@ -20,3 +20,4 @@ oclif.manifest.json
 
 .env
 .env.loacl
+.env.gitoq.lock
