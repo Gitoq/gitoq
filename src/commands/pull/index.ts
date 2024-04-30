@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPull } from "../../services/index.js";
-import { cancelOperation, dispatchEnvContent, errorHandler, getLock } from "../../helper/index.js";
+import { cancelOperation, dispatchEnvContent, getLock } from "../../helper/index.js";
 
 export default class Pull extends Command {
   static description = "Pull";
@@ -22,8 +22,8 @@ export default class Pull extends Command {
     if (flags.list) {
       const envs = await apiCliProjectEnvs(token)
         .then((res) => res.data.envs)
-        .catch(errorHandler(spinner));
-      spinner.stop();
+        .catch((error) => cancelOperation({ spinner, message: error.message }));
+      spinner.stop(messages.env.checked);
 
       if (envs) {
         const env = await p.select({
@@ -32,6 +32,8 @@ export default class Pull extends Command {
           options: envs.map(({ id, name }) => ({ value: id, label: name })),
         });
 
+        if (p.isCancel(env)) cancelOperation({ spinner });
+
         spinner.start(messages.loading);
 
         await apiCliPull(token, env.toString())
@@ -39,15 +41,15 @@ export default class Pull extends Command {
             await dispatchEnvContent(data.env.content);
             spinner.stop(messages.env.pulled);
           })
-          .catch(errorHandler(spinner));
-      } else cancelOperation();
+          .catch((error) => cancelOperation({ spinner, message: error.message }));
+      } else cancelOperation({ spinner });
     } else {
       await apiCliPull(token, "")
         .then(async ({ data }) => {
           await dispatchEnvContent(data.env.content);
           spinner.stop(messages.env.pulled);
         })
-        .catch(errorHandler(spinner));
+        .catch((error) => cancelOperation({ spinner, message: error.message }));
     }
 
     p.log.message();

@@ -59,10 +59,9 @@ export const getLock = (spinner?: TSpinner) => {
     }
   }
 
-  if (spinner) spinner.stop(chalk.redBright(messages.project.connect));
-  else p.cancel(chalk.redBright(messages.project.connect));
-  p.log.message();
-  process.exit(0);
+  cancelOperation({ spinner, message: messages.project.connect });
+
+  return "";
 };
 
 // ? env file
@@ -79,10 +78,9 @@ export const getEnvContent = async (spinner?: TSpinner) => {
     return await encrypt("ENV", content);
   }
 
-  if (spinner) spinner.stop(chalk.redBright(messages.env.notFound));
-  else p.cancel(chalk.redBright(messages.env.notFound));
-  p.log.message();
-  process.exit(0);
+  cancelOperation({ spinner, message: messages.env.notFound });
+
+  return "";
 };
 
 export const dispatchEnvContent = async (content: string) => {
@@ -96,10 +94,6 @@ type TSpinner = {
   stop: (msg?: string | undefined) => void;
   start: (msg?: string | undefined) => void;
   message: (msg?: string | undefined) => void;
-};
-
-export const errorHandler = (spinner: TSpinner) => (error: any) => {
-  spinner.stop(chalk.redBright(error?.message ?? messages.error));
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
@@ -125,7 +119,7 @@ type TBrowserOptions = {
 };
 
 export const browser = async <T>({ url, port, params, spinner, waitingMessage }: TBrowserOptions) => {
-  spinner.start(`"Opening browser 🔁"`);
+  spinner.start(messages.browser.opening);
 
   const queue = new URLSearchParams(params);
   queue.set("port", String(port));
@@ -145,7 +139,7 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
 
     openResult.on("exit", (code) => {
       if (code === 0) {
-        spinner.stop("Browser opened");
+        spinner.stop(messages.browser.opened);
         spinner.start(waitingMessage);
       }
     });
@@ -173,9 +167,9 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
           } catch (error) {
             res.writeHead(400, browserLoginHeader);
             reject(error);
-            errorHandler(spinner)(error);
             res.end();
             server.close();
+            cancelOperation({ spinner, message: error.message });
           }
         });
       }

@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPush } from "../../services/index.js";
-import { cancelOperation, errorHandler, getEnvContent, getLock } from "../../helper/index.js";
+import { cancelOperation, getEnvContent, getLock } from "../../helper/index.js";
 
 export default class Push extends Command {
   static description = "Push";
@@ -23,9 +23,8 @@ export default class Push extends Command {
     if (flags.list) {
       const envs = await apiCliProjectEnvs(token)
         .then((res) => res.data.envs)
-        .catch(errorHandler(spinner));
-
-      spinner.stop();
+        .catch((error) => cancelOperation({ spinner, message: error.message }));
+      spinner.stop(messages.env.checked);
 
       if (envs) {
         const env = await p.select({
@@ -34,16 +33,18 @@ export default class Push extends Command {
           options: envs.map(({ id, name }) => ({ value: id, label: name })),
         });
 
+        if (p.isCancel(env)) cancelOperation({ spinner });
+
         spinner.start(messages.loading);
 
         await apiCliPush(token, env.toString(), { content })
           .then(() => spinner.stop(messages.env.pushed))
-          .catch(errorHandler(spinner));
-      } else cancelOperation();
+          .catch((error) => cancelOperation({ spinner, message: error.message }));
+      } else cancelOperation({ spinner });
     } else {
       await apiCliPush(token, "", { content })
         .then(() => spinner.stop(messages.env.pushed))
-        .catch(errorHandler(spinner));
+        .catch((error) => cancelOperation({ spinner, message: error.message }));
     }
 
     p.log.message();

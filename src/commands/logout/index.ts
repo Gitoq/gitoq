@@ -2,7 +2,7 @@ import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliLogout } from "../../services/index.js";
-import { deleteConfig, errorHandler } from "../../helper/index.js";
+import { cancelOperation, deleteConfig } from "../../helper/index.js";
 
 export default class Logout extends Command {
   static description = "Logout";
@@ -18,7 +18,7 @@ export default class Logout extends Command {
         deleteConfig();
         spinner.stop(data.message);
       })
-      .catch(errorHandler(spinner));
+      .catch((error) => cancelOperation({ spinner, message: error.message }));
     p.log.message();
   }
 }
