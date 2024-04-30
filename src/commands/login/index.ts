@@ -1,9 +1,12 @@
 import chalk from "chalk";
+import dotenv from "dotenv";
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import getPort, { portNumbers } from "get-port";
 import { apiCliLogin } from "../../services/index.js";
 import { browser, cancelOperation, dispatchConfig, errorHandler, isConfigExists } from "../../helper/index.js";
+
+dotenv.config();
 
 type TBrowserLoginResponse = { token: string };
 

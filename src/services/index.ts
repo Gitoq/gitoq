@@ -5,6 +5,24 @@
  * OpenAPI spec version: 1.0.0
  */
 import { api } from "./api.js";
+export type ApiCliProjectEnvs200 = {
+  message?: string;
+  envs: ExtraLimitedEnv[];
+};
+
+export type ApiCliPull200 = {
+  env: Env;
+  message?: string;
+};
+
+export type ApiCliPush200 = {
+  message?: string;
+};
+
+export type ApiCliPushBody = {
+  content: string;
+};
+
 export type ApiCliWorkspaceProjects200 = {
   message?: string;
   projects: ExtraLimitedProject[];
@@ -88,22 +106,6 @@ export interface UserFully {
   default_workspace: Workspace;
 }
 
-export interface ProjectFully {
-  id: number;
-  name: string;
-  owner: number;
-  token: string;
-  workspace: number;
-  created_at: string;
-  envs: LimitedEnd[];
-  envs_count: number;
-  default_env: number;
-  licenses: License[];
-  licenses_count: number;
-  with_env_example: boolean;
-  user_license: LicensePermissions;
-}
-
 export interface Env {
   id: number;
   name: string;
@@ -168,6 +170,22 @@ export interface LimitedEnd {
   workspace: number;
   created_at: string;
   is_default: boolean;
+}
+
+export interface ProjectFully {
+  id: number;
+  name: string;
+  owner: number;
+  token: string;
+  workspace: number;
+  created_at: string;
+  envs: LimitedEnd[];
+  envs_count: number;
+  default_env: number;
+  licenses: License[];
+  licenses_count: number;
+  with_env_example: boolean;
+  user_license: LicensePermissions;
 }
 
 export interface LimitedUser {
@@ -314,6 +332,13 @@ export interface ExtraLimitedProject {
   token: string;
 }
 
+export interface ExtraLimitedEnv {
+  /** ID */
+  id: number;
+  /** name */
+  name: string;
+}
+
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
 
 /**
@@ -340,7 +365,31 @@ export const apiCliUserWorkspaces = (options?: SecondParameter<typeof api>) =>
 export const apiCliWorkspaceProjects = (id: number, options?: SecondParameter<typeof api>) =>
   api<ApiCliWorkspaceProjects200>({ method: "GET", url: `/cli/workspace-projects/${id}` }, options);
 
+/**
+ * @summary push
+ */
+export const apiCliPush = (token: string, env: string, apiCliPushBody: ApiCliPushBody, options?: SecondParameter<typeof api>) =>
+  api<ApiCliPush200>(
+    { method: "POST", data: apiCliPushBody, url: `/cli/push/${token}/${env}`, headers: { "Content-Type": "application/json" } },
+    options,
+  );
+
+/**
+ * @summary pull
+ */
+export const apiCliPull = (token: string, env: string, options?: SecondParameter<typeof api>) =>
+  api<ApiCliPull200>({ method: "GET", url: `/cli/pull/${token}/${env}` }, options);
+
+/**
+ * @summary project envs
+ */
+export const apiCliProjectEnvs = (token: string, options?: SecondParameter<typeof api>) =>
+  api<ApiCliProjectEnvs200>({ method: "GET", url: `/cli/project-envs/${token}` }, options);
+
 export type ApiCliLoginResult = NonNullable<Awaited<ReturnType<typeof apiCliLogin>>>;
 export type ApiCliLogoutResult = NonNullable<Awaited<ReturnType<typeof apiCliLogout>>>;
 export type ApiCliUserWorkspacesResult = NonNullable<Awaited<ReturnType<typeof apiCliUserWorkspaces>>>;
 export type ApiCliWorkspaceProjectsResult = NonNullable<Awaited<ReturnType<typeof apiCliWorkspaceProjects>>>;
+export type ApiCliPushResult = NonNullable<Awaited<ReturnType<typeof apiCliPush>>>;
+export type ApiCliPullResult = NonNullable<Awaited<ReturnType<typeof apiCliPull>>>;
+export type ApiCliProjectEnvsResult = NonNullable<Awaited<ReturnType<typeof apiCliProjectEnvs>>>;

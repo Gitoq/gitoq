@@ -1,16 +1,17 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
+import messages from "../../messages/index.js";
 import { apiCliLogout } from "../../services/index.js";
 import { deleteConfig, errorHandler } from "../../helper/index.js";
 
-export default class Login extends Command {
+export default class Logout extends Command {
   static description = "Logout";
 
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
   async run(): Promise<void> {
     const sp = p.spinner();
-    sp.start("loading 🔁");
+    sp.start(messages.loading);
 
     await apiCliLogout()
       .then(({ data }) => {

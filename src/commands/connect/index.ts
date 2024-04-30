@@ -1,5 +1,6 @@
 import * as p from "@clack/prompts";
 import { Args, Command } from "@oclif/core";
+import messages from "../../messages/index.js";
 import { cancelOperation, dispatchLock, errorHandler } from "../../helper/index.js";
 import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index.js";
 
@@ -12,7 +13,7 @@ export default class Connect extends Command {
 
   async run(): Promise<void> {
     const sp = p.spinner();
-    sp.start("loading 🔁");
+    sp.start(messages.loading);
 
     const { args } = await this.parse(Connect);
     const { token } = args;
@@ -20,7 +21,7 @@ export default class Connect extends Command {
     if (token) {
       dispatchLock(token);
 
-      sp.stop("Remote added ✅");
+      sp.stop(messages.remoteAdded);
     } else {
       const workspaces = await apiCliUserWorkspaces()
         .then(({ data }) => data.workspaces)
@@ -29,17 +30,17 @@ export default class Connect extends Command {
       sp.stop();
 
       if (workspaces) {
-        if (workspaces.length === 0) cancelOperation(p, "You don't have any workspaces containing at least one project !");
+        if (workspaces.length === 0) cancelOperation(p, messages.noWorkspaceFound);
 
         const workspace = await p.select({
-          message: "Select a workspace",
           initialValue: workspaces[0].id,
+          message: messages.selectWorkspace,
           options: workspaces.map(({ id, name }) => ({ value: id, label: name })),
         });
 
         if (p.isCancel(workspace)) cancelOperation(p);
 
-        sp.start("loading 🔁");
+        sp.start(messages.loading);
 
         const projects = await apiCliWorkspaceProjects(workspace as number)
           .then(({ data }) => data.projects)
@@ -48,11 +49,11 @@ export default class Connect extends Command {
         sp.stop();
 
         if (projects) {
-          if (projects.length === 0) cancelOperation(p, "There are no projects in this workspace !");
+          if (projects.length === 0) cancelOperation(p, messages.noProjectFound);
 
           const project = await p.select({
-            message: "Select a project",
             initialValue: projects[0].id,
+            message: messages.selectProject,
             options: projects.map(({ id, name }) => ({ value: id, label: name })),
           });
 

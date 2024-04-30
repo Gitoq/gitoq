@@ -1,13 +1,23 @@
 {
   "workbench.colorCustomizations": {
-    "commandCenter.border": "#15202b99",
     "sash.hoverBorder": "#61b3bd",
+    "commandCenter.border": "#15202b99",
     "titleBar.activeBackground": "#85c4cc",
     "titleBar.activeForeground": "#15202b",
     "titleBar.inactiveBackground": "#85c4cc99",
     "titleBar.inactiveForeground": "#15202b99"
   },
   "peacock.color": "#85C4CC",
-  "conventionalCommits.scopes": ["global", "constants", "helper", "services", "commands", "configs", "conflict", "bin"],
+  "conventionalCommits.scopes": [
+    "bin",
+    "global",
+    "helper",
+    "message",
+    "configs",
+    "services",
+    "commands",
+    "conflict",
+    "constants"
+  ],
   "cSpell.words": ["gitoq", "oclif", "outro", "postpack", "posttest"]
 }

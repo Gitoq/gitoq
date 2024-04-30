@@ -3,12 +3,13 @@ import fs from "node:fs";
 import chalk from "chalk";
 import dotenv from "dotenv";
 import path from "node:path";
-import { encrypt } from "./crypto.js";
+import * as p from "@clack/prompts";
 import { createServer } from "node:http";
+import messages from "../messages/index.js";
+import { decrypt, encrypt } from "./crypto.js";
 import { CONFIG_FILE_URL } from "../constants/index.js";
 
-export const configEnv = dotenv.config;
-configEnv();
+dotenv.config();
 
 // ? config file
 type TJsonFileContent = { token: string };
@@ -29,7 +30,8 @@ export const getConfig = () => {
     }
   }
 
-  throw new Error("Please login first");
+  p.cancel(messages.authError);
+  return "";
 };
 
 export const deleteConfig = () => isConfigExists() && fs.unlinkSync(CONFIG_FILE_URL);
@@ -48,6 +50,44 @@ export const dispatchLock = (token: string) => {
 export const deleteLock = () => {
   const { path, isExists } = isLockExists();
   isExists && fs.unlinkSync(path);
+};
+
+export const getLock = () => {
+  const { path, isExists } = isLockExists();
+  if (isExists) {
+    const content = fs.readFileSync(path, { encoding: "utf8" });
+    if (content) {
+      const parsedData = JSON.parse(content) as TJsonFileContent;
+      if (parsedData.token) return parsedData.token;
+    }
+  }
+
+  p.cancel(messages.connectProject);
+  return "";
+};
+
+// ? env file
+export const isEnvExists = () => {
+  const envPaths = [".env.test"];
+  const foundPath = envPaths.find((pathname) => fs.existsSync(path.join(process.cwd(), pathname)));
+  return { isExists: Boolean(foundPath), path: foundPath ?? envPaths[0] };
+};
+
+export const getEnvContent = async () => {
+  const { path, isExists } = isEnvExists();
+  if (isExists) {
+    const content = fs.readFileSync(path, { encoding: "utf8" });
+    return await encrypt("ENV", content);
+  }
+
+  p.cancel(messages.envNotFound);
+  return "";
+};
+
+export const dispatchEnvContent = async (content: string) => {
+  const { path } = isEnvExists();
+  const encryptedContent = await decrypt("ENV", content);
+  fs.writeFileSync(path, encryptedContent, { flag: "w+" });
 };
 
 // ? error handler

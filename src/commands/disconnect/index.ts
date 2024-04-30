@@ -1,5 +1,6 @@
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
+import messages from "../../messages/index.js";
 import { deleteLock } from "../../helper/index.js";
 
 export default class Disconnect extends Command {
@@ -9,10 +10,10 @@ export default class Disconnect extends Command {
 
   async run(): Promise<void> {
     const sp = p.spinner();
-    sp.start("loading 🔁");
+    sp.start(messages.loading);
 
     deleteLock();
 
-    sp.stop("Project disconnected ✅");
+    sp.stop(messages.disconnected);
   }
 }
