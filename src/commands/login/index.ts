@@ -5,7 +5,7 @@ import { Command } from "@oclif/core";
 import messages from "../../messages/index.js";
 import getPort, { portNumbers } from "get-port";
 import { apiCliLogin } from "../../services/index.js";
-import { browser, cancelOperation, dispatchConfig, errorHandler, isConfigExists } from "../../helper/index.js";
+import { browser, cancelOperation, commandNote, dispatchConfig, errorHandler, isConfigExists } from "../../helper/index.js";
 
 dotenv.config();
 
@@ -17,7 +17,7 @@ export default class Login extends Command {
   static examples = ["<%= config.bin %> <%= command.id %>"];
 
   async run(): Promise<void> {
-    if (isConfigExists()) cancelOperation(messages.login.error);
+    if (isConfigExists()) cancelOperation({ message: messages.login.error });
 
     const spinner = p.spinner();
 
@@ -28,8 +28,12 @@ export default class Login extends Command {
       const { data } = await apiCliLogin({ headers: { authorization: token } });
       dispatchConfig(data.token);
       spinner.stop(messages.login.success);
-      const noteDescription = `Connect your project.        \nRun the connect command:        \n${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("connect")}`;
-      p.note(noteDescription, chalk.bold(messages.nextStep));
+      const description = [
+        "Connect your project.",
+        "Run the connect command:",
+        `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("connect")}`,
+      ];
+      commandNote({ description, title: messages.nextStep });
     } catch (error) {
       errorHandler(spinner)(error);
     }

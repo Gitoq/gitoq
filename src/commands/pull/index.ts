@@ -24,6 +24,7 @@ export default class Pull extends Command {
         .then((res) => res.data.envs)
         .catch(errorHandler(spinner));
       spinner.stop();
+
       if (envs) {
         const env = await p.select({
           initialValue: envs[0].id,

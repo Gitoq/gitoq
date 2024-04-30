@@ -102,8 +102,9 @@ export const errorHandler = (spinner: TSpinner) => (error: any) => {
   spinner.stop(chalk.redBright(error?.message ?? messages.error));
 };
 
-export const cancelOperation = (message?: string) => {
-  p.cancel(message ?? messages.cancel);
+export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
+  if (options?.spinner) options.spinner.stop(chalk.redBright(options.message ?? messages.cancel));
+  else p.cancel(chalk.redBright(options?.message ?? messages.cancel));
   p.log.message();
   process.exit(0);
 };
@@ -180,4 +181,9 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
       }
     }).listen(port);
   });
+};
+
+export const commandNote = ({ title, description }: { title: string; description: string[] }) => {
+  const noteDescription = description.map((item, index) => `${item}         ${description.length === index + 1 ? "" : "\n"}`);
+  p.note(noteDescription.join(""), chalk.bold(title));
 };
