@@ -21,7 +21,7 @@ export default class Connect extends Command {
     if (token) {
       dispatchLock(token);
 
-      sp.stop(messages.remoteAdded);
+      sp.stop(messages.project.remote);
     } else {
       const workspaces = await apiCliUserWorkspaces()
         .then(({ data }) => data.workspaces)
@@ -30,11 +30,11 @@ export default class Connect extends Command {
       sp.stop();
 
       if (workspaces) {
-        if (workspaces.length === 0) cancelOperation(p, messages.noWorkspaceFound);
+        if (workspaces.length === 0) cancelOperation(p, messages.workspace.notFound);
 
         const workspace = await p.select({
           initialValue: workspaces[0].id,
-          message: messages.selectWorkspace,
+          message: messages.workspace.select,
           options: workspaces.map(({ id, name }) => ({ value: id, label: name })),
         });
 
@@ -49,11 +49,11 @@ export default class Connect extends Command {
         sp.stop();
 
         if (projects) {
-          if (projects.length === 0) cancelOperation(p, messages.noProjectFound);
+          if (projects.length === 0) cancelOperation(p, messages.project.notFound);
 
           const project = await p.select({
             initialValue: projects[0].id,
-            message: messages.selectProject,
+            message: messages.project.select,
             options: projects.map(({ id, name }) => ({ value: id, label: name })),
           });
 
@@ -63,7 +63,7 @@ export default class Connect extends Command {
 
           dispatchLock(token);
 
-          sp.stop(`${name} selected ✅`);
+          sp.stop(`${name} now selected ✅`);
         } else cancelOperation(p);
       } else cancelOperation(p);
     }

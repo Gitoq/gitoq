@@ -30,19 +30,19 @@ export default class Push extends Command {
       if (envs) {
         const env = await p.select({
           initialValue: envs[0].id,
-          message: messages.selectEnv,
+          message: messages.env.select,
           options: envs.map(({ id, name }) => ({ value: id, label: name })),
         });
 
         sp.start(messages.loading);
 
         await apiCliPush(token, env.toString(), { content })
-          .then(() => sp.stop(messages.pushed))
+          .then(() => sp.stop(messages.env.pushed))
           .catch(errorHandler(sp));
       } else cancelOperation(p);
     } else {
       await apiCliPush(token, "", { content })
-        .then(() => sp.stop(messages.pushed))
+        .then(() => sp.stop(messages.env.pushed))
         .catch(errorHandler(sp));
     }
   }

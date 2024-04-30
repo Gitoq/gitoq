@@ -62,7 +62,7 @@ export const getLock = () => {
     }
   }
 
-  p.cancel(messages.connectProject);
+  p.cancel(messages.project.connect);
   return "";
 };
 
@@ -80,7 +80,7 @@ export const getEnvContent = async () => {
     return await encrypt("ENV", content);
   }
 
-  p.cancel(messages.envNotFound);
+  p.cancel(messages.env.notFound);
   return "";
 };
 
@@ -97,10 +97,10 @@ type TSp = {
   message: (msg?: string | undefined) => void;
 };
 
-export const errorHandler = (sp: TSp) => (error: any) => sp.stop(error.message ?? "fetch failed !");
+export const errorHandler = (sp: TSp) => (error: any) => sp.stop(error.message ?? messages.error);
 
 export const cancelOperation = (p: any, message?: string) => {
-  p.cancel(message ?? "Operation cancelled.🙁");
+  p.cancel(message ?? messages.cancel);
   process.exit(0);
 };
 

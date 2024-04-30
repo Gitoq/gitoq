@@ -14,6 +14,6 @@ export default class Disconnect extends Command {
 
     deleteLock();
 
-    sp.stop(messages.disconnected);
+    sp.stop(messages.project.disconnected);
   }
 }

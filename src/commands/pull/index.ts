@@ -27,7 +27,7 @@ export default class Pull extends Command {
       if (envs) {
         const env = await p.select({
           initialValue: envs[0].id,
-          message: messages.selectEnv,
+          message: messages.env.select,
           options: envs.map(({ id, name }) => ({ value: id, label: name })),
         });
 
@@ -36,7 +36,7 @@ export default class Pull extends Command {
         await apiCliPull(token, env.toString())
           .then(async ({ data }) => {
             await dispatchEnvContent(data.env.content);
-            sp.stop(messages.pulled);
+            sp.stop(messages.env.pulled);
           })
           .catch(errorHandler(sp));
       } else cancelOperation(p);
@@ -44,7 +44,7 @@ export default class Pull extends Command {
       await apiCliPull(token, "")
         .then(async ({ data }) => {
           await dispatchEnvContent(data.env.content);
-          sp.stop(messages.pulled);
+          sp.stop(messages.env.pulled);
         })
         .catch(errorHandler(sp));
     }
