@@ -30,6 +30,7 @@ type TBrowserOptions = {
 
 export const regex = {
   envKeyValue: /^(.*?)=(.*)$/gm,
+  envRemoveDefaultContent: /#\/-+ gitoq -+\/[\S\s]*?#\/-+ .env.* -+\//,
 };
 
 // ? config file
@@ -91,19 +92,20 @@ export const isEnvExists = () => {
 export const getEnvContent = async (spinner?: TSpinner) => {
   const { path, isExists } = isEnvExists();
   if (isExists) {
-    const content = fs.readFileSync(path, { encoding: "utf8" });
+    let content = fs.readFileSync(path, { encoding: "utf8" });
+    content = content.replace(regex.envRemoveDefaultContent, "");
     return await encrypt("ENV", content);
   }
 
   cancelOperation({ spinner, message: messages.env.notFound });
-
   return "";
 };
 
-export const dispatchEnvContent = async (content: string) => {
+export const dispatchEnvContent = async (content: string, name: string) => {
   const { path } = isEnvExists();
   const encryptedContent = await decrypt("ENV", content);
-  fs.writeFileSync(path, encryptedContent, { flag: "w+" });
+
+  fs.writeFileSync(path, `${defaultEnvContent(name)}${encryptedContent}`, { flag: "w+" });
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
@@ -210,3 +212,12 @@ export const envParser = (content: string) =>
     },
     { token: "" },
   );
+
+export const defaultEnvContent = (name: string) => {
+  const content = `
+#/------------------------ gitoq ------------------------/
+# Your data's safety is our top priority!         
+# [learn more] (${process.env.FRONT_BASE_URL})   
+#/----------------- .env.${name} -------------------/`;
+  return content.replace(/^\n|\n$/g, "");
+};

@@ -19,5 +19,5 @@ oclif.lock
 oclif.manifest.json
 
 .env
-.env.loacl
+.env.local
 .env.gitoq.lock
