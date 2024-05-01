@@ -5,7 +5,14 @@ import { Command } from "@oclif/core";
 import messages from "../../messages/index.js";
 import getPort, { portNumbers } from "get-port";
 import { apiCliLogin } from "../../services/index.js";
-import { browser, cancelOperation, commandNote, dispatchConfig, isConfigExists } from "../../helper/index.js";
+import {
+  NeedHelpDescription,
+  browser,
+  cancelOperation,
+  commandNote,
+  dispatchConfig,
+  isConfigExists,
+} from "../../helper/index.js";
 
 dotenv.config();
 
@@ -18,9 +25,9 @@ const description = [
 ];
 
 export default class Login extends Command {
-  static description = "Login";
-
+  static description = NeedHelpDescription;
   static examples = ["<%= config.bin %> <%= command.id %>"];
+  static summary = "Login your account";
 
   async run(): Promise<void> {
     const spinner = p.spinner();

@@ -1,3 +1,5 @@
+import { LOCAL_ENV_PATHS } from "../constants/index.js";
+
 const messages = {
   nextStep: "Next step",
   loading: "Loading 🔁",
@@ -21,10 +23,10 @@ const messages = {
   },
   env: {
     select: "Please select an env:",
-    pushed: "Your .env.local pushed in {name} env 🔑",
-    pulled: "Your .env.local pulled in {name} env 🔑",
-    notFound: "No .env.local file found in this directory",
     checked: "The envs you have access to have been checked",
+    pushed: `Your ${LOCAL_ENV_PATHS} pushed in {name} env 🔑`,
+    pulled: `Your ${LOCAL_ENV_PATHS} pulled in {name} env 🔑`,
+    notFound: `No ${LOCAL_ENV_PATHS} file found in this directory`,
   },
   project: {
     remote: "Remote added 🔒",

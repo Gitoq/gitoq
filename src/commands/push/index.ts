@@ -3,7 +3,7 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPush } from "../../services/index.js";
-import { cancelOperation, commandNote, getEnvContent, getLock } from "../../helper/index.js";
+import { NeedHelpDescription, cancelOperation, commandNote, getEnvContent, getLock } from "../../helper/index.js";
 
 const description = [
   "You can pull the latest changes too.",
@@ -14,11 +14,10 @@ const description = [
 ];
 
 export default class Push extends Command {
-  static description = "Push";
-
+  static description = NeedHelpDescription;
   static examples = ["<%= config.bin %> <%= command.id %>"];
-
   static flags = { list: Flags.boolean({ char: "l" }) };
+  static summary = "Set changes of local workspace to env";
 
   async run(): Promise<void> {
     const spinner = p.spinner();

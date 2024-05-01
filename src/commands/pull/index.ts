@@ -3,14 +3,14 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPull } from "../../services/index.js";
-import { cancelOperation, dispatchEnvContent, getLock } from "../../helper/index.js";
+import { NeedHelpDescription, cancelOperation, dispatchEnvContent, getLock } from "../../helper/index.js";
 
 export default class Pull extends Command {
-  static description = "Pull";
-
+  static description = NeedHelpDescription;
   static examples = ["<%= config.bin %> <%= command.id %>"];
-
   static flags = { list: Flags.boolean({ char: "l" }) };
+
+  static summary = "Get changes of env to local workspace";
 
   async run(): Promise<void> {
     const spinner = p.spinner();

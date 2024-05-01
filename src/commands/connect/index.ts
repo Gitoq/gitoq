@@ -2,8 +2,8 @@ import chalk from "chalk";
 import * as p from "@clack/prompts";
 import { Args, Command } from "@oclif/core";
 import messages from "../../messages/index.js";
-import { cancelOperation, commandNote, dispatchLock } from "../../helper/index.js";
 import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/index.js";
+import { NeedHelpDescription, cancelOperation, commandNote, dispatchLock } from "../../helper/index.js";
 
 const description = [
   "You can push the latest changes too.",
@@ -15,10 +15,8 @@ const description = [
 
 export default class Connect extends Command {
   static args = { token: Args.string() };
-
-  static description = "Connect";
-
-  static examples = ["<%= config.bin %> <%= command.id %>"];
+  static description = NeedHelpDescription;
+  static summary = "Connect your project to local workspace";
 
   async run(): Promise<void> {
     const spinner = p.spinner();

@@ -7,7 +7,7 @@ import * as p from "@clack/prompts";
 import { createServer } from "node:http";
 import messages from "../messages/index.js";
 import { decrypt, encrypt } from "./crypto.js";
-import { CONFIG_FILE_URL } from "../constants/index.js";
+import { CONFIG_FILE_URL, EXAMPLE_ENV_PATHS, LOCAL_ENV_PATHS } from "../constants/index.js";
 
 dotenv.config();
 
@@ -27,6 +27,8 @@ type TBrowserOptions = {
   waitingMessage: string;
   params?: string | string[][] | URLSearchParams | Record<string, string>;
 };
+
+export const NeedHelpDescription = `${messages.needHelp} ${chalk.underline(chalk.cyan(`${process.env.FRONT_BASE_URL}/docs`))}`;
 
 export const regex = {
   removeSpace: / /g,
@@ -86,9 +88,8 @@ export const getLock = (spinner?: TSpinner): TLockEnvParsOption => {
 
 // ? env file
 export const isEnvExists = () => {
-  const pathname = ".env.local";
-  const isExists = fs.existsSync(path.join(process.cwd(), pathname));
-  return { isExists, path: pathname };
+  const isExists = fs.existsSync(path.join(process.cwd(), LOCAL_ENV_PATHS));
+  return { isExists, path: LOCAL_ENV_PATHS };
 };
 
 export const getEnvContent = async (spinner?: TSpinner) => {
@@ -117,19 +118,18 @@ export const dispatchEnvContent = async ({
   fs.writeFileSync(envPath, `${defaultEnvContent(env.name)}\n${encryptedContent}`, { flag: "w+" });
 
   // create .env.example
-  const examplePath = ".env.example";
   if (with_env_example) {
     const content = generateEnvExample(encryptedContent);
-    fs.writeFileSync(examplePath, `${defaultEnvContent("example")}\n${content}`, { flag: "w+" });
+    fs.writeFileSync(EXAMPLE_ENV_PATHS, `${defaultEnvContent("example")}\n${content}`, { flag: "w+" });
   }
   // if with_env_example is false and .env.example is exist
-  else if (fs.existsSync(path.join(process.cwd(), examplePath))) fs.unlinkSync(examplePath);
+  else if (fs.existsSync(path.join(process.cwd(), EXAMPLE_ENV_PATHS))) fs.unlinkSync(EXAMPLE_ENV_PATHS);
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
   if (options?.spinner) options.spinner.stop(chalk.redBright(options.message ?? messages.cancel));
   else p.cancel(chalk.redBright(options?.message ?? messages.cancel));
-  p.outro(`${messages.needHelp} ${chalk.underline(chalk.cyan(`${process.env.FRONT_BASE_URL}/docs`))}`);
+  p.outro(NeedHelpDescription);
   process.exit(0);
 };
 

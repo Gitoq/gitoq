@@ -2,12 +2,12 @@ import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliLogout } from "../../services/index.js";
-import { cancelOperation, deleteConfig } from "../../helper/index.js";
+import { NeedHelpDescription, cancelOperation, deleteConfig } from "../../helper/index.js";
 
 export default class Logout extends Command {
-  static description = "Logout";
-
+  static description = NeedHelpDescription;
   static examples = ["<%= config.bin %> <%= command.id %>"];
+  static summary = "Logout your account";
 
   async run(): Promise<void> {
     const spinner = p.spinner();
