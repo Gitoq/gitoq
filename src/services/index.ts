@@ -13,6 +13,7 @@ export type ApiCliProjectEnvs200 = {
 export type ApiCliPull200 = {
   env: Env;
   message?: string;
+  with_env_example: boolean;
 };
 
 export type ApiCliPush200 = {

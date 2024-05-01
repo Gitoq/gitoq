@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig",
+  "references": [{ "path": ".." }],
   "compilerOptions": {
     "noEmit": true
-  },
-  "references": [{ "path": ".." }]
+  }
 }

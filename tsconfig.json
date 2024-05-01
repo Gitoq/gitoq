@@ -1,22 +1,22 @@
 {
+  "include": ["./src/**/*"],
+  "ts-node": {
+    "esm": true,
+    "files": true,
+    "transpileOnly": true
+  },
   "compilerOptions": {
-    "declaration": true,
     "strict": true,
     "outDir": "dist",
     "rootDir": "src",
     "composite": true,
     "module": "node16",
     "target": "es2019",
+    "declaration": true,
     "skipLibCheck": true,
     "importHelpers": true,
     "esModuleInterop": true,
     "moduleResolution": "node16",
     "useUnknownInCatchVariables": false
-  },
-  "include": ["./src/**/*"],
-  "ts-node": {
-    "transpileOnly": true,
-    "files": true,
-    "esm": true
   }
 }

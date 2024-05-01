@@ -1,8 +1,9 @@
 {
-  "extends": ["oclif", "oclif-typescript", "prettier", "plugin:require-extensions/recommended"],
   "plugins": ["perfectionist", "require-extensions"],
+  "extends": ["oclif", "oclif-typescript", "prettier", "plugin:require-extensions/recommended"],
   "rules": {
     "n/shebang": "off",
+    "camelcase": "off",
     "valid-jsdoc": "off",
     "no-return-await": "off",
     "no-process-exit": "off",
@@ -12,15 +13,15 @@
     "import/no-named-as-default-member": "off",
     "unicorn/prefer-string-replace-all": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "perfectionist/sort-enums": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-imports": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-exports": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-objects": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-jsx-props": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-interfaces": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-union-types": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-object-types": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-array-includes": ["error", { "type": "line-length", "order": "asc" }],
-    "perfectionist/sort-intersection-types": ["error", { "type": "line-length", "order": "asc" }]
+    "perfectionist/sort-enums": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-imports": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-exports": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-objects": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-jsx-props": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-interfaces": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-union-types": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-object-types": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-array-includes": ["error", { "order": "asc", "type": "line-length" }],
+    "perfectionist/sort-intersection-types": ["error", { "order": "asc", "type": "line-length" }]
   }
 }

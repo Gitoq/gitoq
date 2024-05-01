@@ -11,8 +11,8 @@ import { CONFIG_FILE_URL } from "../constants/index.js";
 
 dotenv.config();
 
+type TLockEnvParsOption = { token: string };
 type TConfigFileContent = { token: string };
-type TEnvParsOption = { token: string };
 type TEnvStringOptions = { key: string; value?: string }[];
 
 type TSpinner = {
@@ -72,7 +72,7 @@ export const deleteLock = () => {
   isExists && fs.unlinkSync(path);
 };
 
-export const getLock = (spinner?: TSpinner): TEnvParsOption => {
+export const getLock = (spinner?: TSpinner): TLockEnvParsOption => {
   const { path, isExists } = isLockExists();
   if (isExists) {
     const content = fs.readFileSync(path, { encoding: "utf8" });
@@ -105,10 +105,25 @@ export const getEnvContent = async (spinner?: TSpinner) => {
   return "";
 };
 
-export const dispatchEnvContent = async (content: string, name: string) => {
-  const { path } = isEnvExists();
-  const encryptedContent = await decrypt("ENV", content);
-  fs.writeFileSync(path, `${defaultEnvContent(name)}\n${encryptedContent}`, { flag: "w+" });
+export const dispatchEnvContent = async ({
+  env,
+  with_env_example,
+}: {
+  with_env_example: boolean;
+  env: { name: string; content: string };
+}) => {
+  const { path: envPath } = isEnvExists();
+  const encryptedContent = await decrypt("ENV", env.content);
+  fs.writeFileSync(envPath, `${defaultEnvContent(env.name)}\n${encryptedContent}`, { flag: "w+" });
+
+  // create .env.example
+  const examplePath = ".env.example";
+  if (with_env_example) {
+    const content = generateEnvExample(encryptedContent);
+    fs.writeFileSync(examplePath, `${defaultEnvContent("example")}\n${content}`, { flag: "w+" });
+  }
+  // if with_env_example is false and .env.example is exist
+  else if (fs.existsSync(path.join(process.cwd(), examplePath))) fs.unlinkSync(examplePath);
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
@@ -143,7 +158,6 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
     openResult.on("error", () => {
       spinner.stop(`please open ${chalk.underline(chalk.gray(href))} your browser`);
     });
-
     openResult.on("exit", (code) => {
       if (code === 0) {
         spinner.stop(messages.browser.opened);
@@ -180,7 +194,8 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
           }
         });
       }
-    }).listen(port);
+    });
+    server.listen(port);
   });
 };
 
@@ -189,33 +204,46 @@ export const commandNote = ({ title, description }: { title: string; description
   p.note(noteDescription.join(""), chalk.bold(title));
 };
 
-export const envTrimer = (content: string) =>
-  content
-    .split("\n")
-    .map((item) => {
-      regex.envKeyValue.lastIndex = 0;
-      const match = regex.envKeyValue.exec(item);
-      return match ? `${match[1].replace(regex.removeSpace, "")}=${match[2].replace(regex.removeSpace, "")}` : item.trim();
-    })
-    .join("\n")
-    .trim();
+export const envTrimer = (content: string) => {
+  const _content = content.split("\n").map((item) => {
+    regex.envKeyValue.lastIndex = 0;
+    const match = regex.envKeyValue.exec(item);
+    return match ? `${match[1]}=${match[2]}`.replace(regex.removeSpace, "") : item.trim();
+  });
+  return _content.join("\n").trim();
+};
 
-export const envStringify = (parseEnv: TEnvStringOptions) =>
-  parseEnv.reduce<string>((prev, current) => {
-    prev += current.key && current.value ? `${current.key}=${current.value}` : current.key;
+export const envStringify = (parseEnv: TEnvStringOptions) => {
+  const _content = parseEnv.reduce<string>((prev, current) => {
+    prev += current.key && current.value ? `${current.key}=${current.value}`.replace(regex.removeSpace, "") : current.key.trim();
     return `${prev}\n`;
   }, "");
+  return _content.trim();
+};
 
-export const lockEnvParser = (content: string) =>
-  content.split("\n").reduce<TEnvParsOption>(
+export const lockEnvParser = (content: string) => {
+  const _content = content.split("\n").reduce<TLockEnvParsOption>(
     (prev, current) => {
       regex.envKeyValue.lastIndex = 0;
       const match = regex.envKeyValue.exec(current);
-      if (match && ["token"].includes(match[1])) prev = { ...prev, [match[1]]: match[2] };
+      if (match && ["token"].includes(match[1]))
+        prev = { ...prev, [match[1].replace(regex.removeSpace, "")]: match[2].replace(regex.removeSpace, "") };
       return prev;
     },
     { token: "" },
   );
+  return _content;
+};
+
+export const generateEnvExample = (content: string) => {
+  const _content = content.split("\n").reduce<string>((prev, current) => {
+    regex.envKeyValue.lastIndex = 0;
+    const match = regex.envKeyValue.exec(current);
+    prev += match ? `${match[1]}=` : current;
+    return `${prev}\n`;
+  }, "");
+  return _content;
+};
 
 export const defaultEnvContent = (name: string) => {
   const content = `

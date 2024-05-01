@@ -20,4 +20,5 @@ oclif.manifest.json
 
 .env
 .env.local
+.env.example
 .env.gitoq.lock

@@ -14,13 +14,13 @@ export default defineConfig({
       client: "axios-functions",
       target: "./src/services/index.ts",
       override: {
-        mutator: { path: "./src/services/api.ts", name: "api" },
-        operationName: (operation, route, verb) => {
+        mutator: { name: "api", path: "./src/services/api.ts" },
+        operationName(operation) {
           const tag = operation?.tags?.[0]
             .split("/")
             .map((item) => toCamelCase(item))
             .join("");
-          const summary = operation.summary;
+          const { summary } = operation;
           const title = tag + " " + summary;
           return `api${toCamelCase(title)}`;
         },
