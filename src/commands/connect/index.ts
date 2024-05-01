@@ -6,10 +6,10 @@ import { apiCliUserWorkspaces, apiCliWorkspaceProjects } from "../../services/in
 import { NeedHelpDescription, cancelOperation, commandNote, dispatchLock } from "../../helper/index.js";
 
 const description = [
-  "You can push the latest changes too.",
-  "Run the push command:",
+  "You can set the latest changes of your main env.",
+  "Please run the push command:",
   `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("push")}`,
-  "Or run:",
+  "Or get a list of your envs:",
   `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("push")} -l`,
 ];
 
@@ -67,7 +67,7 @@ export default class Connect extends Command {
           dispatchLock([{ key: "token", value: token }]);
 
           p.log.message();
-          spinner.stop(messages.project.selected.replace("{name}", name));
+          spinner.stop(messages.project.selected.replace("{name}", chalk.whiteBright(`'${name}'`)));
         } else cancelOperation({ spinner });
       } else cancelOperation({ spinner });
 

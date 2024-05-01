@@ -40,7 +40,7 @@ export default class Pull extends Command {
         await apiCliPull(token, env.toString())
           .then(async ({ data }) => {
             await dispatchEnvContent({ env: data.env, with_env_example: data.with_env_example });
-            spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(data.env.name)));
+            spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
           })
           .catch((error) => cancelOperation({ spinner, message: error.message }));
       } else cancelOperation({ spinner });
@@ -48,7 +48,7 @@ export default class Pull extends Command {
       await apiCliPull(token, "")
         .then(async ({ data }) => {
           await dispatchEnvContent({ env: data.env, with_env_example: data.with_env_example });
-          spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(data.env.name)));
+          spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
         })
         .catch((error) => cancelOperation({ spinner, message: error.message }));
     }

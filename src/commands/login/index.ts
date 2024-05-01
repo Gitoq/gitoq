@@ -19,8 +19,8 @@ dotenv.config();
 type TBrowserLoginResponse = { token: string };
 
 const description = [
-  "Connect your project.",
-  "Run the connect command:",
+  "Now you need to connect your project.",
+  "Please run the connect command:",
   `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("connect")}`,
 ];
 

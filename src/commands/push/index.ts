@@ -6,10 +6,10 @@ import { apiCliProjectEnvs, apiCliPush } from "../../services/index.js";
 import { NeedHelpDescription, cancelOperation, commandNote, getEnvContent, getLock } from "../../helper/index.js";
 
 const description = [
-  "You can pull the latest changes too.",
-  "Run the pull command:",
+  "You can get the latest changes of your main env.",
+  "Please run the pull command:",
   `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("pull")}`,
-  "Or run:",
+  "Or get a list of your envs:",
   `${chalk.whiteBright("$ gitoq")} ${chalk.greenBright("pull")} -l`,
 ];
 
@@ -47,7 +47,7 @@ export default class Push extends Command {
 
         await apiCliPush(token, env.toString(), { content })
           .then(({ data }) => {
-            spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(data.env.name)));
+            spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
             commandNote({ description, title: messages.nextStep });
           })
           .catch((error) => cancelOperation({ spinner, message: error.message }));
@@ -55,7 +55,7 @@ export default class Push extends Command {
     } else {
       await apiCliPush(token, "", { content })
         .then(({ data }) => {
-          spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(data.env.name)));
+          spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
           commandNote({ description, title: messages.nextStep });
         })
         .catch((error) => cancelOperation({ spinner, message: error.message }));
