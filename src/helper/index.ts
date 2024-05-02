@@ -32,6 +32,7 @@ export const NeedHelpDescription = `${messages.needHelp} ${chalk.underline(chalk
 
 export const regex = {
   removeSpace: / /g,
+  version: /\d+\.\d+\.\d+/,
   envKeyValue: /^(.*?)=(.*)$/gm,
   removeEnter: /^[\n\r]+|[\n\r]+$/g,
   envRemoveDefaultContent: /#\/-+ gitoq -+\/[\S\s]*?#\/-+ .env.* -+\//,
@@ -253,4 +254,12 @@ export const defaultEnvContent = (name: string) => {
 #/----------------- .env.${name} -------------------/
 `;
   return content.replace(regex.removeEnter, "");
+};
+
+export const getVersion = () => {
+  const content = fs.readFileSync(process.cwd() + "/version.txt", { encoding: "utf8" });
+  const data = content.match(regex.version);
+  let version = "0.0.0";
+  if (data) version = data[0];
+  return version;
 };
