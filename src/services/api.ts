@@ -35,7 +35,8 @@ export const api = async <T>({ url, data, method, params, headers }: TOrvalOptio
 
     throw json;
   } catch (error: any) {
-    error?.status === 401 && deleteConfig();
+    const status = error?.status;
+    if (status && [401, 423].includes(status)) deleteConfig();
     throw error;
   }
 };
