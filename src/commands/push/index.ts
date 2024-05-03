@@ -3,7 +3,7 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPush } from "../../services/index.js";
-import { NeedHelpDescription, cancelOperation, commandNote, getEnvContent, getLock } from "../../helper/index.js";
+import { NeedHelpDescription, cancelOperation, commandNote, getEnvContent, getLock, replaceMessage } from "../../helper/index.js";
 
 const description = [
   "You can get the latest changes of your main env.",
@@ -24,7 +24,7 @@ export default class Push extends Command {
     spinner.start(messages.loading);
 
     const { token } = getLock(spinner);
-    const content = await getEnvContent(spinner);
+    const { path, content } = await getEnvContent(spinner);
 
     const { flags } = await this.parse(Push);
 
@@ -47,7 +47,11 @@ export default class Push extends Command {
 
         await apiCliPush(token, env.toString(), { content })
           .then(({ data }) => {
-            spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
+            const message = replaceMessage(messages.env.pushed, [
+              { key: "path", value: path },
+              { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
+            ]);
+            spinner.stop(message);
             commandNote({ description, title: messages.nextStep });
           })
           .catch((error) => cancelOperation({ spinner, message: error.message }));
@@ -55,7 +59,11 @@ export default class Push extends Command {
     } else {
       await apiCliPush(token, "", { content })
         .then(({ data }) => {
-          spinner.stop(messages.env.pushed.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
+          const message = replaceMessage(messages.env.pushed, [
+            { key: "path", value: path },
+            { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
+          ]);
+          spinner.stop(message);
           commandNote({ description, title: messages.nextStep });
         })
         .catch((error) => cancelOperation({ spinner, message: error.message }));

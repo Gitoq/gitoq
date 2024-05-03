@@ -3,7 +3,7 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliProjectEnvs, apiCliPull } from "../../services/index.js";
-import { NeedHelpDescription, cancelOperation, dispatchEnvContent, getLock } from "../../helper/index.js";
+import { NeedHelpDescription, cancelOperation, dispatchEnvContent, getLock, replaceMessage } from "../../helper/index.js";
 
 export default class Pull extends Command {
   static description = NeedHelpDescription;
@@ -39,16 +39,24 @@ export default class Pull extends Command {
 
         await apiCliPull(token, env.toString())
           .then(async ({ data }) => {
-            await dispatchEnvContent({ env: data.env, with_env_example: data.with_env_example });
-            spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
+            const path = await dispatchEnvContent(data);
+            const message = replaceMessage(messages.env.pulled, [
+              { key: "path", value: path },
+              { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
+            ]);
+            spinner.stop(message);
           })
           .catch((error) => cancelOperation({ spinner, message: error.message }));
       } else cancelOperation({ spinner });
     } else {
       await apiCliPull(token, "")
         .then(async ({ data }) => {
-          await dispatchEnvContent({ env: data.env, with_env_example: data.with_env_example });
-          spinner.stop(messages.env.pulled.replace("{name}", chalk.whiteBright(`'${data.env.name}'`)));
+          const path = await dispatchEnvContent(data);
+          const message = replaceMessage(messages.env.pulled, [
+            { key: "path", value: path },
+            { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
+          ]);
+          spinner.stop(message);
         })
         .catch((error) => cancelOperation({ spinner, message: error.message }));
     }
