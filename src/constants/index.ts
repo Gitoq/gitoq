@@ -1,7 +1,7 @@
 import os from "node:os";
 import path from "node:path";
 
-export const LOCAL_ENV_PATHS = ".env.local";
+export const LOCAL_ENV_PATHS = [".env", ".env.local"];
 
 export const EXAMPLE_ENV_PATH = ".env.example";
 
