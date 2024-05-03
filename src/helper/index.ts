@@ -7,7 +7,7 @@ import * as p from "@clack/prompts";
 import { createServer } from "node:http";
 import messages from "../messages/index.js";
 import { decrypt, encrypt } from "./crypto.js";
-import { CONFIG_FILE_URL, EXAMPLE_ENV_PATHS, LOCAL_ENV_PATHS } from "../constants/index.js";
+import { CONFIG_FILE_URL, EXAMPLE_ENV_PATH, LOCAL_ENV_PATHS } from "../constants/index.js";
 
 dotenv.config();
 
@@ -121,10 +121,10 @@ export const dispatchEnvContent = async ({
   // create .env.example
   if (with_env_example) {
     const content = generateEnvExample(encryptedContent);
-    fs.writeFileSync(EXAMPLE_ENV_PATHS, `${defaultEnvContent("example")}\n${content}`, { flag: "w+" });
+    fs.writeFileSync(EXAMPLE_ENV_PATH, `${defaultEnvContent("example")}\n${content}`, { flag: "w+" });
   }
   // if with_env_example is false and .env.example is exist
-  else if (fs.existsSync(path.join(process.cwd(), EXAMPLE_ENV_PATHS))) fs.unlinkSync(EXAMPLE_ENV_PATHS);
+  else if (fs.existsSync(path.join(process.cwd(), EXAMPLE_ENV_PATH))) fs.unlinkSync(EXAMPLE_ENV_PATH);
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
