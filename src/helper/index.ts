@@ -89,8 +89,8 @@ export const getLock = (spinner?: TSpinner): TLockEnvParsOption => {
 
 // ? env file
 export const isEnvExists = () => {
-  const isExists = fs.existsSync(path.join(process.cwd(), LOCAL_ENV_PATHS));
-  return { isExists, path: LOCAL_ENV_PATHS };
+  const isExists = LOCAL_ENV_PATHS.find((item) => fs.existsSync(path.join(process.cwd(), item)));
+  return { isExists: Boolean(isExists), path: isExists ?? LOCAL_ENV_PATHS[0] };
 };
 
 export const getEnvContent = async (spinner?: TSpinner) => {
@@ -100,20 +100,15 @@ export const getEnvContent = async (spinner?: TSpinner) => {
     content = envTrimer(content);
     content = content.replace(regex.envRemoveDefaultContent, "");
     content = content.replace(regex.removeEnter, "");
-    return await encrypt("ENV", content);
+    return { path, content: await encrypt("ENV", content) };
   }
 
   cancelOperation({ spinner, message: messages.env.notFound });
-  return "";
+  return { path, content: "" };
 };
 
-export const dispatchEnvContent = async ({
-  env,
-  with_env_example,
-}: {
-  with_env_example: boolean;
-  env: { name: string; content: string };
-}) => {
+type TDispatchEnvContent = { with_env_example: boolean; env: { name: string; content: string } };
+export const dispatchEnvContent = async ({ env, with_env_example }: TDispatchEnvContent) => {
   const { path: envPath } = isEnvExists();
   const encryptedContent = await decrypt("ENV", env.content);
   fs.writeFileSync(envPath, `${defaultEnvContent(env.name)}\n${encryptedContent}`, { flag: "w+" });
@@ -125,6 +120,7 @@ export const dispatchEnvContent = async ({
   }
   // if with_env_example is false and .env.example is exist
   else if (fs.existsSync(path.join(process.cwd(), EXAMPLE_ENV_PATH))) fs.unlinkSync(EXAMPLE_ENV_PATH);
+  return envPath;
 };
 
 export const cancelOperation = (options?: { message?: string; spinner?: TSpinner }) => {
@@ -263,3 +259,6 @@ export const getVersion = () => {
   if (data) version = data[0];
   return version;
 };
+
+export const replaceMessage = (message: string, replacements: { key: string; value: string }[]): string =>
+  replacements.reduce<string>((prev, { key, value }) => prev.replace(`{${key}}`, value), message);
