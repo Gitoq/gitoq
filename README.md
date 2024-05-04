@@ -1,4 +1,4 @@
-`gitoq` is a cli to share env files with high security and minimum time between environments and team members.
+`gitoq` is a cli to share env files with high security in minimum time between environments and team members.
 
 [![NPM Version](https://img.shields.io/npm/v/gitoq.svg?style=flat-square)](https://npmjs.org/package/gitoq)
 
@@ -34,8 +34,8 @@ gitoq pull
 gitoq push
 ```
 
-After connecting the project we create an `env.gitoq.lock` file to track the project. you can
-commit your `env.gitoq.lock` file safely to code.
+After connecting the project we will create an `env.gitoq.lock` file to track the project. you can
+commit and push your `env.gitoq.lock` file safely to a version controller like git.
 
 ---
 
