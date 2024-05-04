@@ -2,7 +2,7 @@
 
 Fork and clone the repo. Use `./bin/dev` to run local development commands.
 
-```
+```sh
 ./bin/dev login
 ./bin/dev push
 ./bin/dev pull
@@ -17,15 +17,14 @@ Navigate to the root directory of your project where the setup.sh script is loca
 
 ## Testing
 
-```
-npm test
+```sh
+pnpm test
 ```
 
 ## Publishing
 
 Only for those with permission.
 
-```
-npm version patch
-npm publish
+```sh
+pnpm publish
 ```

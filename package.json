@@ -9,15 +9,15 @@
   "keywords": [
     "gitoq"
   ],
-  "repository": "Gitoq/gitoq-cli",
+  "repository": "Gitoq/gitoq",
   "engines": {
     "node": ">=18.0.0"
   },
   "bin": {
     "gitoq": "./bin/run.js"
   },
-  "homepage": "https://github.com/Gitoq/gitoq-cli",
-  "bugs": "https://github.com/Gitoq/gitoq-cli/issues",
+  "homepage": "https://github.com/Gitoq/gitoq",
+  "bugs": "https://github.com/Gitoq/gitoq/issues",
   "description": "oclif example Hello World CLI (ESM)",
   "files": [
     "/bin",

@@ -192,13 +192,21 @@ gitoq pull -l
 
 ## ❓ FAQ
 
-### Should I commit my `env.gitoq.lock` file?
+### What is my main environment?
 
-Yes. It is safe and recommended to do so. It contains your encrypted envs, and your project identifier.
+It is `development` by default, but you can change it in the project settings.
+
+### What does `ENV` mean?
+
+Our intention regarding the file `ENV` is the file `.env` or` .env.local` . We will create one of them for you based on their presence in your source code (priority is given to `.env`).
 
 ### Should I commit my `ENV` files?
 
 No. We strongly recommend against committing your env files to version control. It should only include environment-specific values such as database passwords or API keys. Your production database should have a different password than your development database.
+
+### Should I commit my `env.gitoq.lock` file?
+
+Yes sure. It is safe and recommended to do so. It your project identifier.
 
 ## Contributing
 
