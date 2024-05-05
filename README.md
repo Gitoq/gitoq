@@ -35,8 +35,6 @@ gitoq pull
 
 If you don't have the `ENV` file, we'll create it for you and monitor your changes. Be careful, if it already exists, we'll change its content. (You can change it before running this command to send your `ENV` first)
 
-When you make a change to your `ENV` file, push it up:
-
 ```sh
 gitoq push
 ```
@@ -52,8 +50,6 @@ After you've pushed your `ENV` file, gitoq automatically sets up your main env. 
 ```sh
 gitoq pull -l
 ```
-
-That's it! Manage your env secrets from there.
 
 Would you also like to pull your envs to your local workspace? Run the command:
 
