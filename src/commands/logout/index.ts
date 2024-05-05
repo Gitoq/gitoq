@@ -7,7 +7,7 @@ import { NeedHelpDescription, cancelOperation, deleteConfig } from "../../helper
 export default class Logout extends Command {
   static description = NeedHelpDescription;
   static examples = ["<%= config.bin %> <%= command.id %>"];
-  static summary = "Logout your account";
+  static summary = "If you're using multiple devices, make sure to logout to protect your privacy.";
 
   async run(): Promise<void> {
     const spinner = p.spinner();
