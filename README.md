@@ -18,38 +18,22 @@ Start the process of synchronizing, managing and deploying your passwords using 
 gitoq login
 ```
 
-That's it. now you need to connect your project. run the connect command:
+That's it. Now you need to connect your project. Be careful that your project changes every time you run this command.
 
 ```sh
 gitoq connect
 ```
 
-Nice! You can use the following command to synchronize this env:
-
-```sh
-gitoq pull
-```
-
-```sh
-gitoq push
-```
-
 After connecting the project we will create an `env.gitoq.lock` file to track the project. you can
 commit and push your `env.gitoq.lock` file safely to a version controller like git.
 
----
-
-## 🏗️ Usage
-
-⭐ Note: Our intention regarding the file `ENV` is the file `.env` or `.env.local`. We will create one of them for you based on their presence in your source code (priority is given to `.env`).
-
-Now you can get the latest changes of your main env (by default `development`):
+Now you can get the latest changes of your main env (by default `development`) :
 
 ```bash
 gitoq pull
 ```
 
-If you don't have the env.local file, we'll create it for you and monitor your changes. Be careful, if it already exists, we'll change its content. (You can change it before running this command to send your env.local first)
+If you don't have the `ENV` file, we'll create it for you and monitor your changes. Be careful, if it already exists, we'll change its content. (You can change it before running this command to send your `ENV` first)
 
 When you make a change to your `ENV` file, push it up:
 
@@ -57,17 +41,21 @@ When you make a change to your `ENV` file, push it up:
 gitoq push
 ```
 
+⭐ Note: Our intention regarding the file `ENV` is the file `.env` or `.env.local`. We will create one of them for you based on their presence in your source code (priority is given to `.env`).
+
+---
+
 ## 👽 Manage Multiple Environments
 
-After you've pushed your `ENV` file, gitoq automatically sets up your main env. Manage multiple environments with the included UI. [learn more](https://www.gitoq.com)
+After you've pushed your `ENV` file, gitoq automatically sets up your main env. Manage multiple environments with the included UI ([learn more](https://www.gitoq.com)) or :
 
 ```sh
 gitoq pull -l
 ```
 
-That's it! Manage your ci, staging, and production secrets from there.
+That's it! Manage your env secrets from there.
 
-Would you also like to pull your production `.env` to your machine? Run the command:
+Would you also like to pull your envs to your local workspace? Run the command:
 
 ```sh
 gitoq pull -l
@@ -102,7 +90,7 @@ gitoq login
 
 ### `logout`
 
-logout your gitoq account.
+If you're using multiple devices, make sure to logout to protect your privacy.
 
 Example:
 
@@ -129,14 +117,14 @@ _[Token]_
 Connect your project directly to your local workspace.
 
 ```sh
-gitoq connect PROJECT_TOKEN
+gitoq connect Token
 ```
 
 ---
 
 ### `disconnect`
 
-cancel access to the project from the local workspace.
+Cancel access to the project from the local workspace.
 
 Example:
 
