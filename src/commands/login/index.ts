@@ -27,7 +27,7 @@ const description = [
 export default class Login extends Command {
   static description = NeedHelpDescription;
   static examples = ["<%= config.bin %> <%= command.id %>"];
-  static summary = "Login your account";
+  static summary = "Login your gitoq account";
 
   async run(): Promise<void> {
     const spinner = p.spinner();
