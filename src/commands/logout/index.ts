@@ -18,7 +18,12 @@ export default class Logout extends Command {
         deleteConfig();
         spinner.stop(data.message);
       })
-      .catch((error) => cancelOperation({ spinner, message: error.message }));
+      .catch((error) => {
+        if (error?.status === 401) {
+          deleteConfig();
+          spinner.stop("logged out. hope to see you soon 🖐️");
+        } else cancelOperation({ spinner, message: error.message });
+      });
     p.log.message();
   }
 }
