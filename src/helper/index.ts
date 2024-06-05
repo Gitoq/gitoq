@@ -25,7 +25,6 @@ type TBrowserOptions = {
   port: number;
   spinner: TSpinner;
   waitingMessage: string;
-  params?: string | string[][] | URLSearchParams | Record<string, string>;
 };
 
 export const NeedHelpDescription = `${messages.needHelp} ${chalk.underline(chalk.cyan(`${process.env.FRONT_BASE_URL}/docs`))}`;
@@ -137,23 +136,20 @@ const browserLoginHeader = {
   "Access-Control-Allow-Origin": process.env.FRONT_BASE_URL,
 };
 
-export const browser = async <T>({ url, port, params, spinner, waitingMessage }: TBrowserOptions) => {
+export const browser = async <T>({ url, port, spinner, waitingMessage }: TBrowserOptions) => {
   spinner.start(messages.browser.opening);
 
-  const queue = new URLSearchParams(params);
-  queue.set("port", String(port));
+  const searchparams = new URLSearchParams();
+  const callback = await encrypt("CLI", `http://localhost:${port}/callback`);
+  searchparams.set("callback", callback);
 
-  const encryptQuery = new URLSearchParams();
-  const encryptValue = await encrypt("CLI", queue.toString());
-  encryptQuery.set("=", encryptValue);
-
-  const href = `${process.env.FRONT_BASE_URL}${url}?${encryptQuery.toString()}`;
+  const href = `${process.env.FRONT_BASE_URL}${url}?${searchparams.toString()}`;
 
   const openResult = await open(href);
 
   return new Promise<T>((resolve, reject) => {
     openResult.on("error", () => {
-      spinner.stop(`please open ${chalk.underline(chalk.gray(href))} your browser`);
+      spinner.stop(`please open ${chalk.underline(chalk.gray(href))} in your browser`);
     });
     openResult.on("exit", (code) => {
       if (code === 0) {
@@ -169,27 +165,27 @@ export const browser = async <T>({ url, port, params, spinner, waitingMessage }:
         return;
       }
 
-      if (req.url === "/callback" && req.method === "POST") {
-        let body = "";
+      res.writeHead(301, { location: process.env.FRONT_BASE_URL });
 
-        req.on("data", (chunk) => {
-          body += chunk.toString();
-        });
+      const url = new URL("http://localhost:3000" + req.url);
 
-        req.on("end", () => {
-          try {
-            res.writeHead(200, browserLoginHeader);
-            resolve(JSON.parse(body));
-            res.end();
-            server.close();
-          } catch (error) {
-            res.writeHead(400, browserLoginHeader);
-            reject(error);
-            res.end();
-            server.close();
-            cancelOperation({ spinner, message: error.message });
-          }
-        });
+      if (url.pathname === "/callback/" && req.method === "GET") {
+        const token = url.searchParams.get("token");
+        if (token) {
+          resolve({ token } as T);
+          res.end();
+          server.close();
+        } else {
+          reject(new Error("sth went wrong"));
+          res.end();
+          server.close();
+          cancelOperation({ spinner, message: "sth went wrong" });
+        }
+      } else {
+        reject(new Error("sth went wrong"));
+        res.end();
+        server.close();
+        cancelOperation({ spinner, message: "sth went wrong" });
       }
     });
     server.listen(port);
