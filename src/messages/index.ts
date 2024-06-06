@@ -4,6 +4,7 @@ const messages = {
   nextStep: "Next step",
   loading: "Loading 🔁",
   needHelp: "Do you need help?",
+  globalError: "sth went wrong",
   cancel: "Operation cancelled.🙁",
   browser: {
     opened: "Browser opened",

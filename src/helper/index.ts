@@ -166,8 +166,7 @@ export const browser = async <T>({ url, port, spinner, waitingMessage }: TBrowse
       }
 
       res.writeHead(301, { location: process.env.FRONT_BASE_URL });
-
-      const url = new URL("http://localhost:3000" + req.url);
+      const url = new URL((process.env.FRONT_BASE_URL as string) + req.url);
 
       if (url.pathname === "/callback/" && req.method === "GET") {
         const token = url.searchParams.get("token");
@@ -176,16 +175,16 @@ export const browser = async <T>({ url, port, spinner, waitingMessage }: TBrowse
           res.end();
           server.close();
         } else {
-          reject(new Error("sth went wrong"));
+          reject(new Error(messages.globalError));
           res.end();
           server.close();
-          cancelOperation({ spinner, message: "sth went wrong" });
+          cancelOperation({ spinner, message: messages.globalError });
         }
       } else {
-        reject(new Error("sth went wrong"));
+        reject(new Error(messages.globalError));
         res.end();
         server.close();
-        cancelOperation({ spinner, message: "sth went wrong" });
+        cancelOperation({ spinner, message: messages.globalError });
       }
     });
     server.listen(port);
