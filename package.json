@@ -3,7 +3,7 @@
   "license": "MIT",
   "type": "module",
   "author": "gitoq",
-  "version": "0.0.0",
+  "version": "1.0.4",
   "types": "dist/index.d.ts",
   "exports": "./lib/index.js",
   "keywords": [
@@ -16,9 +16,9 @@
   "bin": {
     "gitoq": "./bin/run.js"
   },
-  "homepage": "https://github.com/Gitoq/gitoq",
+  "homepage": "gitoq.com",
   "bugs": "https://github.com/Gitoq/gitoq/issues",
-  "description": "oclif example Hello World CLI (ESM)",
+  "description": "Gitoq is a tool that allows secure synchronization of environment variables in .env files. It provides both CLI and GUI for easy use across different environments and for collaboration among team members.",
   "files": [
     "/bin",
     "/dist",
