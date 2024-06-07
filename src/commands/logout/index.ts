@@ -21,7 +21,7 @@ export default class Logout extends Command {
       .catch((error) => {
         if (error?.status === 401) {
           deleteConfig();
-          spinner.stop("logged out. hope to see you soon 🖐️");
+          spinner.stop(messages.logout.success);
         } else cancelOperation({ spinner, message: error.message });
       });
     p.log.message();
