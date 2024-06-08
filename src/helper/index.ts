@@ -155,6 +155,7 @@ export const browser = async <T>({ url, port, spinner, waitingMessage }: TBrowse
   const searchparams = new URLSearchParams();
   const callback = stringToHex(`http://localhost:${port}/callback`);
   searchparams.set("callback", callback);
+  searchparams.set("id", Date.now().toString());
 
   const href = `${FRONT_BASE_URL}${url}?${searchparams.toString()}`;
 
