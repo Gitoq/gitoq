@@ -1,18 +1,6 @@
-import dotenv from "dotenv";
 import cryptoJs from "crypto-js";
 
-dotenv.config();
+export const encrypt = async (content: string, key: string) => await cryptoJs.AES.encrypt(content, key).toString();
 
-type TKey = "ENV" | "CLI";
-
-export const encrypt = async (key: TKey, content: string) =>
-  await cryptoJs.AES.encrypt(
-    content,
-    key === "CLI" ? String(process.env.CLI_SYNC_SALT) : String(process.env.ENV_SYNC_SALT),
-  ).toString();
-
-export const decrypt = async (key: TKey, content: string) =>
-  await cryptoJs.AES.decrypt(
-    content,
-    key === "CLI" ? String(process.env.CLI_SYNC_SALT) : String(process.env.ENV_SYNC_SALT),
-  ).toString(cryptoJs.enc.Utf8);
+export const decrypt = async (content: string, key: string) =>
+  await cryptoJs.AES.decrypt(content, key).toString(cryptoJs.enc.Utf8);
