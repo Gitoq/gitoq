@@ -1,16 +1,12 @@
-import dotenv from "dotenv";
 import { TOptions, TOrvalOptions } from "./types.js";
+import { BACK_BASE_URL } from "../constants/index.js";
 import { deleteConfig, getConfig } from "../helper/index.js";
-
-dotenv.config();
-
-const baseURL = process.env.BACK_BASE_URL as string;
 
 type TApi<T> = Promise<{ data: T; response: Response }>;
 
 export const api = async <T>({ url, data, method, params, headers }: TOrvalOptions, options?: TOptions): TApi<T> => {
   try {
-    url = baseURL + url;
+    url = BACK_BASE_URL + url;
     if (params) url += "?" + new URLSearchParams(params);
 
     const authorization = (options?.headers as any)?.authorization || getConfig();

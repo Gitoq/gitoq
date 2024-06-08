@@ -1,5 +1,4 @@
 import chalk from "chalk";
-import dotenv from "dotenv";
 import * as p from "@clack/prompts";
 import { Command } from "@oclif/core";
 import messages from "../../messages/index.js";
@@ -13,8 +12,6 @@ import {
   dispatchConfig,
   isConfigExists,
 } from "../../helper/index.js";
-
-dotenv.config();
 
 type TBrowserLoginResponse = { token: string };
 

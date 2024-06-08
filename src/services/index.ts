@@ -5,44 +5,23 @@
  * OpenAPI spec version: 1.0.0
  */
 import { api } from "./api.js";
-export type ApiCliProjectEnvs200 = {
-  message?: string;
-  envs: ExtraLimitedEnv[];
-};
+export type ApiCliExchangeEncryptionKey200 = { key: string };
 
-export type ApiCliPull200 = {
-  env: Env;
-  message?: string;
-  with_env_example: boolean;
-};
+export type ApiCliProjectEnvs200 = { message?: string; envs: ExtraLimitedEnv[] };
 
-export type ApiCliPush200 = {
-  env: Env;
-  message?: string;
-};
+export type ApiCliPull200 = { env: Env; message?: string; with_env_example: boolean };
 
-export type ApiCliPushBody = {
-  content: string;
-};
+export type ApiCliPush200 = { env: Env; message?: string };
 
-export type ApiCliWorkspaceProjects200 = {
-  message?: string;
-  projects: ExtraLimitedProject[];
-};
+export type ApiCliPushBody = { content: string };
 
-export type ApiCliUserWorkspaces200 = {
-  message?: string;
-  workspaces: SuperExtraLimitedWorkspace[];
-};
+export type ApiCliWorkspaceProjects200 = { message?: string; projects: ExtraLimitedProject[] };
 
-export type ApiCliLogout200 = {
-  message?: string;
-};
+export type ApiCliUserWorkspaces200 = { message?: string; workspaces: SuperExtraLimitedWorkspace[] };
 
-export type ApiCliLogin200 = {
-  token: string;
-  message?: string;
-};
+export type ApiCliLogout200 = { message?: string };
+
+export type ApiCliLogin200 = { token: string; message?: string };
 
 export interface User {
   id: number;
@@ -84,8 +63,7 @@ export interface Project {
 }
 
 export interface License {
-  /** ID */
-  id: number;
+  /** ID */ id: number;
   role: LicenseRole;
   created_at: string;
   owner: LimitedUser;
@@ -121,37 +99,28 @@ export interface Env {
 /**
  * @nullable
  */
-export type LogInfo = null | {
-  env_name?: string;
-  new_name?: string;
-  prev_name?: string;
-  project_name?: string;
-};
+export type LogInfo = null | { env_name?: string; new_name?: string; prev_name?: string; project_name?: string };
 
 export interface Log {
   id: number;
-  /** @nullable */
-  info: LogInfo;
+  /** @nullable */ info: LogInfo;
   workspace: number;
   action: LogActions;
   created_at: string;
-  /** @nullable */
-  project: null | number;
+  /** @nullable */ project: null | number;
   done_by: ExtraLimitedUser;
   effected?: ExtraLimitedUser;
 }
 
 export interface LimitedWorkspace {
-  /** ID */
-  id: number;
+  /** ID */ id: number;
   owner: number;
   is_default: boolean;
   projects_count: number;
 }
 
 export interface ExtraLimitedWorkspace {
-  /** ID */
-  id: number;
+  /** ID */ id: number;
   name: string;
   avatar: string;
   projects_count: number;
@@ -159,8 +128,7 @@ export interface ExtraLimitedWorkspace {
 
 export interface LimitedProject {
   id: number;
-  /** name */
-  name: string;
+  /** name */ name: string;
   workspace: number;
   default_env: number;
 }
@@ -257,17 +225,11 @@ export type LicensePermissions = LicensePermissionsItem[];
 
 export type LicenseRole = (typeof LicenseRole)[keyof typeof LicenseRole];
 
-export const LicenseRole = {
-  OWNER: "OWNER",
-  MEMBER: "MEMBER",
-} as const;
+export const LicenseRole = { OWNER: "OWNER", MEMBER: "MEMBER" } as const;
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
-export const UserRole = {
-  USER: "USER",
-  ADMIN: "ADMIN",
-} as const;
+export const UserRole = { USER: "USER", ADMIN: "ADMIN" } as const;
 
 export type LogActions = (typeof LogActions)[keyof typeof LogActions];
 
@@ -301,16 +263,10 @@ export const LogActions = {
 
 export type SessionDeviceType = (typeof SessionDeviceType)[keyof typeof SessionDeviceType];
 
-export const SessionDeviceType = {
-  CLI: "CLI",
-  PHONE: "PHONE",
-  OTHERS: "OTHERS",
-  DESKTOP: "DESKTOP",
-} as const;
+export const SessionDeviceType = { CLI: "CLI", PHONE: "PHONE", OTHERS: "OTHERS", DESKTOP: "DESKTOP" } as const;
 
 export interface Session {
-  /** ID */
-  id: number;
+  /** ID */ id: number;
   user: number;
   created_at: string;
   expires_in: number;
@@ -321,24 +277,19 @@ export interface Session {
 }
 
 export interface SuperExtraLimitedWorkspace {
-  /** ID */
-  id: number;
-  /** name */
-  name: string;
+  /** ID */ id: number;
+  /** name */ name: string;
 }
 
 export interface ExtraLimitedProject {
   id: number;
-  /** name */
-  name: string;
+  /** name */ name: string;
   token: string;
 }
 
 export interface ExtraLimitedEnv {
-  /** ID */
-  id: number;
-  /** name */
-  name: string;
+  /** ID */ id: number;
+  /** name */ name: string;
 }
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
@@ -388,6 +339,12 @@ export const apiCliPull = (token: string, env: string, options?: SecondParameter
 export const apiCliProjectEnvs = (token: string, options?: SecondParameter<typeof api>) =>
   api<ApiCliProjectEnvs200>({ method: "GET", url: `/cli/project-envs/${token}` }, options);
 
+/**
+ * @summary exchange encryption key
+ */
+export const apiCliExchangeEncryptionKey = (type: string, token: string, env: string, options?: SecondParameter<typeof api>) =>
+  api<ApiCliExchangeEncryptionKey200>({ method: "GET", url: `/cli/exchange-encryption-key/${type}/${token}/${env}` }, options);
+
 export type ApiCliLoginResult = NonNullable<Awaited<ReturnType<typeof apiCliLogin>>>;
 export type ApiCliLogoutResult = NonNullable<Awaited<ReturnType<typeof apiCliLogout>>>;
 export type ApiCliUserWorkspacesResult = NonNullable<Awaited<ReturnType<typeof apiCliUserWorkspaces>>>;
@@ -395,3 +352,4 @@ export type ApiCliWorkspaceProjectsResult = NonNullable<Awaited<ReturnType<typeo
 export type ApiCliPushResult = NonNullable<Awaited<ReturnType<typeof apiCliPush>>>;
 export type ApiCliPullResult = NonNullable<Awaited<ReturnType<typeof apiCliPull>>>;
 export type ApiCliProjectEnvsResult = NonNullable<Awaited<ReturnType<typeof apiCliProjectEnvs>>>;
+export type ApiCliExchangeEncryptionKeyResult = NonNullable<Awaited<ReturnType<typeof apiCliExchangeEncryptionKey>>>;

@@ -10,6 +10,7 @@
     "n/no-process-exit": "off",
     "unicorn/no-process-exit": "off",
     "unicorn/no-array-reduce": "off",
+    "unicorn/prefer-code-point": "off",
     "import/no-named-as-default-member": "off",
     "unicorn/prefer-string-replace-all": "off",
     "@typescript-eslint/no-explicit-any": "off",

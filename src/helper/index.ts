@@ -1,15 +1,13 @@
 import open from "open";
 import fs from "node:fs";
 import chalk from "chalk";
-import dotenv from "dotenv";
 import path from "node:path";
 import * as p from "@clack/prompts";
 import { createServer } from "node:http";
 import messages from "../messages/index.js";
 import { decrypt, encrypt } from "./crypto.js";
-import { CONFIG_FILE_URL, EXAMPLE_ENV_PATH, LOCAL_ENV_PATHS } from "../constants/index.js";
-
-dotenv.config();
+import { apiCliExchangeEncryptionKey } from "../services/index.js";
+import { CONFIG_FILE_URL, EXAMPLE_ENV_PATH, FRONT_BASE_URL, LOCAL_ENV_PATHS } from "../constants/index.js";
 
 type TLockEnvParsOption = { token: string };
 type TConfigFileContent = { token: string };
@@ -27,7 +25,7 @@ type TBrowserOptions = {
   waitingMessage: string;
 };
 
-export const NeedHelpDescription = `${messages.needHelp} ${chalk.underline(chalk.cyan(`${process.env.FRONT_BASE_URL}/docs`))}`;
+export const NeedHelpDescription = `${messages.needHelp} ${chalk.underline(chalk.cyan(`${FRONT_BASE_URL}/docs`))}`;
 
 export const regex = {
   removeSpace: / /g,
@@ -92,24 +90,29 @@ export const isEnvExists = () => {
   return { isExists: Boolean(isExists), path: isExists ?? LOCAL_ENV_PATHS[0] };
 };
 
-export const getEnvContent = async (spinner?: TSpinner) => {
+export const getEnvContent = async ({ env, token, spinner }: { env: string; token: string; spinner?: TSpinner }) => {
   const { path, isExists } = isEnvExists();
   if (isExists) {
     let content = fs.readFileSync(path, { encoding: "utf8" });
     content = envTrimer(content);
     content = content.replace(regex.envRemoveDefaultContent, "");
     content = content.replace(regex.removeEnter, "");
-    return { path, content: await encrypt("ENV", content) };
+
+    const key = await apiCliExchangeEncryptionKey("PUSH", token, env)
+      .then(({ data }) => data.key)
+      .catch((error) => cancelOperation({ spinner, message: error.message }));
+
+    return { path, content: await encrypt(content, key) };
   }
 
   cancelOperation({ spinner, message: messages.env.notFound });
   return { path, content: "" };
 };
 
-type TDispatchEnvContent = { with_env_example: boolean; env: { name: string; content: string } };
-export const dispatchEnvContent = async ({ env, with_env_example }: TDispatchEnvContent) => {
+type TDispatchEnvContent = { key: string; with_env_example: boolean; env: { name: string; content: string } };
+export const dispatchEnvContent = async ({ key, env, with_env_example }: TDispatchEnvContent) => {
   const { path: envPath } = isEnvExists();
-  const encryptedContent = await decrypt("ENV", env.content);
+  const encryptedContent = await decrypt(env.content, key);
   fs.writeFileSync(envPath, `${defaultEnvContent(env.name)}\n${encryptedContent}`, { flag: "w+" });
 
   // create .env.example
@@ -129,21 +132,31 @@ export const cancelOperation = (options?: { message?: string; spinner?: TSpinner
   process.exit(0);
 };
 
+const stringToHex = (str: string) => {
+  let hex = "";
+  for (let i = 0; i < str.length; i++) {
+    const charCode = str.charCodeAt(i);
+    hex += charCode.toString(16);
+  }
+
+  return hex;
+};
+
 const browserLoginHeader = {
   Connection: "close",
   "Access-Control-Allow-Methods": "*",
   "Access-Control-Allow-Headers": "*",
-  "Access-Control-Allow-Origin": process.env.FRONT_BASE_URL,
+  "Access-Control-Allow-Origin": FRONT_BASE_URL,
 };
 
 export const browser = async <T>({ url, port, spinner, waitingMessage }: TBrowserOptions) => {
   spinner.start(messages.browser.opening);
 
   const searchparams = new URLSearchParams();
-  const callback = await encrypt("CLI", `http://localhost:${port}/callback`);
+  const callback = stringToHex(`http://localhost:${port}/callback`);
   searchparams.set("callback", callback);
 
-  const href = `${process.env.FRONT_BASE_URL}${url}?${searchparams.toString()}`;
+  const href = `${FRONT_BASE_URL}${url}?${searchparams.toString()}`;
 
   const openResult = await open(href);
 
@@ -165,8 +178,8 @@ export const browser = async <T>({ url, port, spinner, waitingMessage }: TBrowse
         return;
       }
 
-      res.writeHead(301, { location: process.env.FRONT_BASE_URL });
-      const url = new URL((process.env.FRONT_BASE_URL as string) + req.url);
+      res.writeHead(301, { location: FRONT_BASE_URL });
+      const url = new URL((FRONT_BASE_URL as string) + req.url);
 
       if (url.pathname === "/callback/" && req.method === "GET") {
         const token = url.searchParams.get("token");
@@ -241,7 +254,7 @@ export const defaultEnvContent = (name: string) => {
   const content = `
 #/------------------------ gitoq ------------------------/
 # Your data's safety is our top priority!
-# [learn more] (${process.env.FRONT_BASE_URL})
+# [learn more] (${FRONT_BASE_URL})
 #/----------------- .env.${name} -------------------/
 `;
   return content.replace(regex.removeEnter, "");

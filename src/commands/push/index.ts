@@ -24,7 +24,6 @@ export default class Push extends Command {
     spinner.start(messages.loading);
 
     const { token } = getLock(spinner);
-    const { path, content } = await getEnvContent(spinner);
 
     const { flags } = await this.parse(Push);
 
@@ -45,7 +44,11 @@ export default class Push extends Command {
 
         spinner.start(messages.loading);
 
-        await apiCliPush(token, env.toString(), { content })
+        const envId = env.toString();
+
+        const { path, content } = await getEnvContent({ token, spinner, env: envId });
+
+        await apiCliPush(token, envId, { content })
           .then(({ data }) => {
             const message = replaceMessage(messages.env.pushed, [
               { key: "path", value: path },
@@ -57,6 +60,8 @@ export default class Push extends Command {
           .catch((error) => cancelOperation({ spinner, message: error.message }));
       } else cancelOperation({ spinner });
     } else {
+      const { path, content } = await getEnvContent({ token, spinner, env: "" });
+
       await apiCliPush(token, "", { content })
         .then(({ data }) => {
           const message = replaceMessage(messages.env.pushed, [

@@ -6,14 +6,17 @@ const messages = {
   needHelp: "Do you need help?",
   globalError: "sth went wrong",
   cancel: "Operation cancelled.🙁",
+  logout: {
+    success: "logged out. hope to see you soon �️",
+  },
   browser: {
     opened: "Browser opened",
-    opening: "Opening browser 🔁",
+    opening: "Opening browser �",
   },
   login: {
     waiting: "Waiting for login 🔁",
-    success: "Logged to Gitoq CLI 🚀",
     error: "You are already logged in",
+    success: "Logged in to Gitoq CLI 🚀",
   },
   workspace: {
     select: "Please select workspace:",
