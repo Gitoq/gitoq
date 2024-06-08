@@ -2,7 +2,7 @@ import chalk from "chalk";
 import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
-import { apiCliProjectEnvs, apiCliPull } from "../../services/index.js";
+import { apiCliExchangeEncryptionKey, apiCliProjectEnvs, apiCliPull } from "../../services/index.js";
 import { NeedHelpDescription, cancelOperation, dispatchEnvContent, getLock, replaceMessage } from "../../helper/index.js";
 
 export default class Pull extends Command {
@@ -37,9 +37,15 @@ export default class Pull extends Command {
 
         spinner.start(messages.loading);
 
-        await apiCliPull(token, env.toString())
+        const envId = env.toString();
+
+        const key = await apiCliExchangeEncryptionKey("PULL", token, envId)
+          .then(({ data }) => data.key)
+          .catch((error) => cancelOperation({ spinner, message: error.message }));
+
+        await apiCliPull(token, envId)
           .then(async ({ data }) => {
-            const path = await dispatchEnvContent(data);
+            const path = await dispatchEnvContent({ ...data, key });
             const message = replaceMessage(messages.env.pulled, [
               { key: "path", value: path },
               { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
@@ -49,9 +55,13 @@ export default class Pull extends Command {
           .catch((error) => cancelOperation({ spinner, message: error.message }));
       } else cancelOperation({ spinner });
     } else {
+      const key = await apiCliExchangeEncryptionKey("PULL", token, "")
+        .then(({ data }) => data.key)
+        .catch((error) => cancelOperation({ spinner, message: error.message }));
+
       await apiCliPull(token, "")
         .then(async ({ data }) => {
-          const path = await dispatchEnvContent(data);
+          const path = await dispatchEnvContent({ ...data, key });
           const message = replaceMessage(messages.env.pulled, [
             { key: "path", value: path },
             { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
