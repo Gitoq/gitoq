@@ -102,7 +102,7 @@ export const getEnvContent = async ({ env, token, spinner }: { env: string; toke
       .then(({ data }) => data.key)
       .catch((error) => cancelOperation({ spinner, message: error.message }));
 
-    return { path, content: await encrypt(content, key) };
+    return { path, content: encrypt(content, key) };
   }
 
   cancelOperation({ spinner, message: messages.env.notFound });
@@ -112,12 +112,14 @@ export const getEnvContent = async ({ env, token, spinner }: { env: string; toke
 type TDispatchEnvContent = { key: string; with_env_example: boolean; env: { name: string; content: string } };
 export const dispatchEnvContent = async ({ key, env, with_env_example }: TDispatchEnvContent) => {
   const { path: envPath } = isEnvExists();
-  const encryptedContent = await decrypt(env.content, key);
-  fs.writeFileSync(envPath, `${defaultEnvContent(env.name)}\n${encryptedContent}`, { flag: "w+" });
+
+  const decryptedContent = decrypt(env.content, key);
+
+  fs.writeFileSync(envPath, `${defaultEnvContent(env.name)}\n${decryptedContent}`, { flag: "w+" });
 
   // create .env.example
   if (with_env_example) {
-    const content = generateEnvExample(encryptedContent);
+    const content = generateEnvExample(decryptedContent);
     fs.writeFileSync(EXAMPLE_ENV_PATH, `${defaultEnvContent("example")}\n${content}`, { flag: "w+" });
   }
   // if with_env_example is false and .env.example is exist

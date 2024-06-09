@@ -1,6 +1,5 @@
 import cryptoJs from "crypto-js";
 
-export const encrypt = async (content: string, key: string) => await cryptoJs.AES.encrypt(content, key).toString();
+export const encrypt = (content: string, key: string) => cryptoJs.AES.encrypt(content, key).toString();
 
-export const decrypt = async (content: string, key: string) =>
-  await cryptoJs.AES.decrypt(content, key).toString(cryptoJs.enc.Utf8);
+export const decrypt = (content: string, key: string) => cryptoJs.AES.decrypt(content, key).toString(cryptoJs.enc.Utf8);
