@@ -35,7 +35,7 @@ export default class Login extends Command {
     }
 
     try {
-      const port = await getPort({ port: portNumbers(3001, 3100) });
+      const port = await getPort({ port: portNumbers(7001, 7100) });
       const options = { port, spinner, url: "/api/cli/verify-login", waitingMessage: messages.login.waiting };
       const { token } = await browser<TBrowserLoginResponse>(options);
       const { data } = await apiCliLogin({ headers: { authorization: token } });

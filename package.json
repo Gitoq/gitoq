@@ -3,7 +3,7 @@
   "license": "MIT",
   "type": "module",
   "author": "gitoq",
-  "version": "1.0.16",
+  "version": "1.0.19",
   "types": "dist/index.d.ts",
   "exports": "./lib/index.js",
   "keywords": [

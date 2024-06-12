@@ -7,7 +7,7 @@
 It works with a single command:
 
 ```sh
-npm i gitoq -g
+npm i -g gitoq
 ```
 
 ## 🚀 Quick start
