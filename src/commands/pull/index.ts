@@ -3,7 +3,14 @@ import * as p from "@clack/prompts";
 import { Command, Flags } from "@oclif/core";
 import messages from "../../messages/index.js";
 import { apiCliExchangeEncryptionKey, apiCliProjectEnvs, apiCliPull } from "../../services/index.js";
-import { NeedHelpDescription, cancelOperation, dispatchEnvContent, getLock, replaceMessage } from "../../helper/index.js";
+import {
+  NeedHelpDescription,
+  cancelOperation,
+  dispatchEnvContent,
+  dispatchGitignore,
+  getLock,
+  replaceMessage,
+} from "../../helper/index.js";
 
 export default class Pull extends Command {
   static description = NeedHelpDescription;
@@ -46,6 +53,8 @@ export default class Pull extends Command {
         await apiCliPull(token, envId)
           .then(async ({ data }) => {
             const path = await dispatchEnvContent({ ...data, key });
+            dispatchGitignore([".env", ".env.*", "!.env.example", "!.env.gitoq.lock"]);
+
             const message = replaceMessage(messages.env.pulled, [
               { key: "path", value: path },
               { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
@@ -62,6 +71,8 @@ export default class Pull extends Command {
       await apiCliPull(token, "")
         .then(async ({ data }) => {
           const path = await dispatchEnvContent({ ...data, key });
+          dispatchGitignore([".env", ".env.*", "!.env.example", "!.env.gitoq.lock"]);
+
           const message = replaceMessage(messages.env.pulled, [
             { key: "path", value: path },
             { key: "name", value: chalk.whiteBright(`'${data.env.name}'`) },
