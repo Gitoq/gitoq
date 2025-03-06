@@ -6,8 +6,8 @@ import path from "node:path";
 // export const BACK_BASE_URL = "http://localhost:4000/api";
 
 // ? prod
-export const FRONT_BASE_URL = "https://gitoq.com";
-export const BACK_BASE_URL = "https://api.gitoq.com/api";
+export const FRONT_BASE_URL = "https://gitoq.ir";
+export const BACK_BASE_URL = "https://api.gitoq.ir/api";
 
 export const LOCAL_ENV_PATHS = [".env", ".env.local"];
 

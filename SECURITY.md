@@ -6,4 +6,4 @@ If you believe you have found a security vulnerability in gitoq, please report i
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Please report all security issues promptly to [security@gitoq.com](mailto:security@gitoq.com). Thank you.
+Please report all security issues promptly to [security@gitoq.ir](mailto:security@gitoq.ir). Thank you.

@@ -21,7 +21,7 @@
   "bin": {
     "gitoq": "./bin/run.js"
   },
-  "homepage": "gitoq.com",
+  "homepage": "gitoq.ir",
   "bugs": "https://github.com/Gitoq/gitoq/issues",
   "description": "Gitoq is a tool that allows secure synchronization of environment variables in .env files. It provides both CLI and GUI for easy use across different environments and for collaboration among team members.",
   "files": [

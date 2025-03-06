@@ -45,7 +45,7 @@ gitoq push
 
 ## 👽 Manage Multiple Environments
 
-After you've pushed your `ENV` file, gitoq automatically sets up your main env. Manage multiple environments with the included UI ([learn more](https://www.gitoq.com)) or :
+After you've pushed your `ENV` file, gitoq automatically sets up your main env. Manage multiple environments with the included UI ([learn more](https://www.gitoq.ir)) or :
 
 ```sh
 gitoq pull -l
@@ -57,7 +57,7 @@ Would you also like to pull your envs to your local workspace? Run the command:
 gitoq pull -l
 ```
 
-<a href="https://www.gitoq.com/docs">Learn more about usage</a>
+<a href="https://www.gitoq.ir/docs">Learn more about usage</a>
 
 ## 📖 Commands
 
