@@ -3,7 +3,7 @@
   "license": "MIT",
   "type": "module",
   "author": "gitoq",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "types": "dist/index.d.ts",
   "exports": "./lib/index.js",
   "keywords": [
@@ -33,7 +33,6 @@
     "@clack/prompts": "^0.7.0",
     "@oclif/core": "^3",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-warn-if-update-available": "^3.1.39",
     "boxen": "^8.0.1",
     "chalk": "^5.3.0",
     "crypto-js": "^4.2.0",
@@ -64,6 +63,7 @@
   },
   "scripts": {
     "posttest": "pnpm run lint",
+    "prepublishOnly": "echo '❌ Direct use of npm publish is not allowed. Please use npm run release instead.' && exit 1",
     "lint": "eslint . --ext .ts",
     "build": "shx rm -rf dist && tsc -b",
     "prepack": "oclif manifest && oclif readme",
@@ -72,7 +72,8 @@
     "version": "oclif readme && git add README.md",
     "test": "mocha --forbid-only test/**/*.test.ts",
     "prettier": "prettier --write {src,test}/**/*.ts",
-    "orval": "orval & eslint --fix src/services/index.ts & prettier --write src/services/index.ts"
+    "orval": "orval & eslint --fix src/services/index.ts & prettier --write src/services/index.ts",
+    "release": "standard-version"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",
