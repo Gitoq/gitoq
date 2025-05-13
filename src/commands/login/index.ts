@@ -4,14 +4,7 @@ import { Command } from "@oclif/core";
 import messages from "../../messages/index.js";
 import getPort, { portNumbers } from "get-port";
 import { apiCliLogin } from "../../services/index.js";
-import {
-  NeedHelpDescription,
-  browser,
-  cancelOperation,
-  commandNote,
-  dispatchConfig,
-  isConfigExists,
-} from "../../helper/index.js";
+import { NeedHelpDescription, browser, cancelOperation, commandNote, dispatchConfig } from "../../helper/index.js";
 
 type TBrowserLoginResponse = { token: string };
 
@@ -28,11 +21,6 @@ export default class Login extends Command {
 
   async run(): Promise<void> {
     const spinner = p.spinner();
-
-    if (isConfigExists()) {
-      spinner.start(messages.loading);
-      cancelOperation({ spinner, message: messages.login.error });
-    }
 
     try {
       const port = await getPort({ port: portNumbers(7001, 7100) });
