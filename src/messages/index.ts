@@ -4,7 +4,7 @@ const messages = {
   nextStep: "Next step",
   loading: "Loading 🔁",
   needHelp: "Do you need help?",
-  changelog: "📄 View full changelog:",
+  changelog: "📄 View changelog:",
   globalError: "sth went wrong",
   cancel: "Operation cancelled.🙁",
   logout: {

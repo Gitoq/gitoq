@@ -14,7 +14,10 @@
     "env",
     "environment"
   ],
-  "repository": "Gitoq/gitoq",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gitoq/gitoq"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -63,7 +66,6 @@
   },
   "scripts": {
     "posttest": "pnpm run lint",
-    "prepublishOnly": "echo '❌ Direct use of npm publish is not allowed. Please use npm run release instead.' && exit 1",
     "lint": "eslint . --ext .ts",
     "build": "shx rm -rf dist && tsc -b",
     "prepack": "oclif manifest && oclif readme",
@@ -72,8 +74,7 @@
     "version": "oclif readme && git add README.md",
     "test": "mocha --forbid-only test/**/*.test.ts",
     "prettier": "prettier --write {src,test}/**/*.ts",
-    "orval": "orval & eslint --fix src/services/index.ts & prettier --write src/services/index.ts",
-    "release": "standard-version"
+    "orval": "orval & eslint --fix src/services/index.ts & prettier --write src/services/index.ts"
   },
   "devDependencies": {
     "@oclif/prettier-config": "^0.2.1",

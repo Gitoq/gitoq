@@ -4,7 +4,7 @@ import path from "path";
 import boxen from "boxen";
 import chalk from "chalk";
 import { Hook } from "@oclif/core";
-import { NeedHelpDescription } from "../../helper/index.js";
+import messages from "../../messages/index.js";
 
 const checkLatestVersion = async (name: string): Promise<string> => {
   const response = await fetch(`https://registry.npmjs.org/${name}`);
@@ -63,7 +63,7 @@ const hook: Hook.Init = async function () {
   const content = `${chalk.italic(message)}\n
 ${chalk.strikethrough.red(`v${currentVersion}`)} → ${chalk.greenBright(`v${latestVersion}`)}\n
 ${chalk.italic("👉 To update, run:")} ${chalk.white(`npm install -g ${this.config.name}`)}\n
-${NeedHelpDescription}`;
+${`${messages.changelog} ${chalk.cyan.underline(`${this.config.pjson.repository.url}/releases/tag/v${latestVersion}`)}`}`;
 
   console.log(boxen(content, { padding: 1, margin: 1, borderStyle: "round", borderColor: "gray", align: "left" }));
 

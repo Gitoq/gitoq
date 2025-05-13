@@ -25,7 +25,7 @@ type TBrowserOptions = {
   waitingMessage: string;
 };
 
-export const NeedHelpDescription = `${messages.needHelp} ${chalk.underline(chalk.cyan(`${FRONT_BASE_URL}/docs`))}`;
+export const NeedHelpDescription = `${messages.needHelp} ${chalk.cyan.underline(`${FRONT_BASE_URL}/docs`)}`;
 
 export const regex = {
   removeSpace: / /g,
