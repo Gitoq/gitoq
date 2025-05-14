@@ -13,8 +13,9 @@ jobs:
         with:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
+      - run: corepack enable
       - run: pnpm install
-      - run: pnpm run build
-      - run: npm publish
+      - run: pnpm build
+      - run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
