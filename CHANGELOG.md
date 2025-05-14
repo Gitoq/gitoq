@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/Gitoq/gitoq/compare/v2.2.1...v2.3.0) (2025-05-14)
+
+
+### Features
+
+* **cli:** 🐛 add version check cache with type-based timing and version override ([4224758](https://github.com/Gitoq/gitoq/commit/422475897804e568daaa9ee288e2c5edca86f67c))
+
 ## [2.2.1](https://github.com/Gitoq/gitoq/compare/v2.2.0...v2.2.1) (2025-05-14)
 
 ### Bug Fixes
