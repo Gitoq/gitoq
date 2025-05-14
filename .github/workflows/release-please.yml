@@ -1,20 +1,20 @@
-name: Publish to NPM
+name: Release Please
 
 on:
-  release:
-    types: [released]
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  publish:
+  release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: googleapis/release-please-action@v4
         with:
-          node-version: 20
-          registry-url: "https://registry.npmjs.org"
-      - run: pnpm install
-      - run: pnpm run build
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          release-type: node
+          package-name: gitoq
+          token: ${{ secrets.RELEASE_TOKEN  }}
