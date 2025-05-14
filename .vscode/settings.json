@@ -19,6 +19,6 @@
     "conflict",
     "constants"
   ],
-  "cSpell.words": ["gitoq", "oclif", "outro", "postpack", "postrun", "posttest"],
+  "cSpell.words": ["gitoq", "oclif", "outro", "pjson", "postpack", "postrun", "posttest"],
   "i18n-ally.localesPaths": ["src/messages"]
 }
