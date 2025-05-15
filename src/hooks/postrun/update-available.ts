@@ -21,9 +21,9 @@ const checkLatestVersion = async (packageName: string): Promise<string | null> =
 
 const getCachePath = (cliName: string) => path.join(os.homedir(), `.config/${cliName}/version-check.json`);
 
-const shouldShowMessage = (cache: LastCacheType | null, currentVersion: string): boolean => {
+const shouldShowMessage = (cache: LastCacheType | null, latestVersion: string): boolean => {
   if (!cache) return true;
-  if (cache.version !== currentVersion) return true;
+  if (cache.version !== latestVersion) return true;
 
   const now = Date.now();
   const diff = now - cache.time;
@@ -38,8 +38,8 @@ const hook: Hook.Init = async function () {
 
   if (!latestVersion || currentVersion === latestVersion) return;
 
-  const [curMajor, curMinor, curPatch] = currentVersion.split(".").map(Number);
-  const [latMajor, latMinor, latPatch] = latestVersion.split(".").map(Number);
+  const [curMajor, curMinor, curPatch] = currentVersion.split(".");
+  const [latMajor, latMinor, latPatch] = latestVersion.split(".");
 
   let type: VersionType | null = null;
   let message: string | null = null;
@@ -65,6 +65,9 @@ const hook: Hook.Init = async function () {
     if (fs.existsSync(cachePath)) {
       const content = fs.readFileSync(cachePath, "utf-8");
       lastCache = JSON.parse(content);
+      const invalidCache =
+        !lastCache?.time || !lastCache?.version || !lastCache?.type || !["major", "minor", "patch"].includes(lastCache.type);
+      if (invalidCache) lastCache = null;
     }
   } catch {
     lastCache = null;
