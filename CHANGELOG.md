@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/Gitoq/gitoq/compare/v2.3.0...v2.3.1) (2025-05-15)
+
+
+### Bug Fixes
+
+* 🔧 Update version comparison logic ([f69bd9c](https://github.com/Gitoq/gitoq/commit/f69bd9c3e980fa9d05c7968b97352f4626b9ee82))
+
 ## [2.3.0](https://github.com/Gitoq/gitoq/compare/v2.2.1...v2.3.0) (2025-05-14)
 
 
